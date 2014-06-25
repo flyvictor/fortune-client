@@ -15,7 +15,7 @@
     "node": ">=0.10"
   },
   "dependencies":{
-    "fortune": "git://github.com/flyvictor/fortune.git#fortune-client-compatibility",
+    "fortune": "git://github.com/flyvictor/fortune.git",
     "lodash": "~2.4.1",
     "when": "~3.2.3",
     "requesto": "~0.0.1"
