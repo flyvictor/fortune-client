@@ -84,4 +84,5 @@ getResource(null, {
   params: {id: 1}, // set request parameters
   query: {filter: {name: "Joe"}}, //query string parameters
 })
+```
 
