@@ -1,0 +1,37 @@
+{
+  "name": "fortune-client",
+  "description": "Library for interacting with multiple instances of Fortune",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author":{
+    "name": "Konstantin Kudryavtsev",
+    "email": "konstantin@flyvictor.com"
+  },
+  "repository":{
+    "type": "git",
+    "url": "https://github.com/flyvictor/fortune-client"
+  },
+  "engines": {
+    "node": ">=0.10"
+  },
+  "dependencies":{
+    "fortune": "git://github.com/flyvictor/fortune.git#fortune-client-compatibility",
+    "lodash": "~2.4.1",
+    "when": "~3.2.3",
+    "requesto": "~0.0.1"
+  },
+  "devDependencies":{
+    "mocha": "~1.20.1",
+    "should": "~4.0.4",
+    "supertest": "~0.13.0",
+    "sinon": "~1.10.2"
+  },
+  "scripts":{
+    "test": "node_modules/mocha/bin/mocha --recursive -R spec"
+  },
+  "config": {
+    "precommit": {
+      "lint": "jshint ."
+    }
+  }
+}

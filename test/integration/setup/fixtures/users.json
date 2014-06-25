@@ -1,0 +1,25 @@
+{
+  "users": [{
+    "name": "Sweeney",
+    "email": "sweeney@cheaphaircut.com"
+  }, {
+    "name": "Alice",
+    "email": "alice@abc.com"
+  }],
+  "addresses": [{
+    "houseNumber": 186,
+    "street": "Fleet Street",
+    "postcode": "EC66 6AH"
+  },{
+    "houseNumber": 1,
+    "street": "Sesame Street",
+    "postode": "123456"
+  }],
+  "instruments": [{
+   "name": "guitar"
+  },{
+   "name": "drums"
+  },{
+    "name": "piano"
+  }]
+}
