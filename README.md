@@ -66,6 +66,7 @@ replaceUsers("Joe", { name: "Alice", sexChangedOn: "2011-10-09"})
 
 ```
 udpateResource(id, data, options)
+```
 
 Updates a given resource.
 
