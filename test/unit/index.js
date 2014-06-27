@@ -12,6 +12,6 @@ describe("UNIT TESTS", function(){
   });
 
   util.requireSpecs(__dirname,[
-    "crud"
+    "crud-factory"
   ]);
 });
