@@ -124,20 +124,20 @@ module.exports = function(util){
     });
 
     it("links external resources", function(done){
-      // client.updateBands(ids.bands[0], [{
-      //   op: "add",
-      //   path: "/bands/0/members/-",
-      //   value: ids.users[0]
-      // }]).then(function(){
-      //   return client.getBands(ids.bands[0],{query: {include:"members"}});
-      // }).then(function(body){
-      //   (body.linked).should.be.an.Object;
-      //   body.linked.users.length.should.equal(1);
-      //   body.linked.users[0].id.should.be.equal(ids.users[0]);
+      client.updateBands(ids.bands[0], [{
+        op: "add",
+        path: "/bands/0/members/-",
+        value: ids.users[0]
+      }]).then(function(){
+        return client.getBands(ids.bands[0],{query: {include:"members"}});
+      }).then(function(body){
+        body.linked.should.be.an.Object;
+        body.linked.users.should.be.an.Array;
+        body.linked.users.length.should.equal(1);
+        body.linked.users[0].id.should.be.equal(ids.users[0]);
 
-      //   done();
-      // });
-      done();
+        done();
+      });
     });
   });
 };
