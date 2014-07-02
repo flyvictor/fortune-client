@@ -139,6 +139,20 @@ module.exports = function(util){
         done();
       });
     });
+
+    it("returns JSON-compatible objects", function(done){
+      client.getUsers().then(function(data){
+        JSON.stringify(data).should.be.ok;
+        done();
+      });
+    });
+
+    it("reformats dashed resource names", function(done){
+      client.getNaNaNaNas().then(function(data){
+        data["na-na-na-nas"].length.should.be.above(0);
+        done();
+      });
+    });
   });
 };
 

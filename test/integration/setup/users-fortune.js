@@ -19,5 +19,7 @@ module.exports = function(){
     inhabitants: [{ref: "user", type: String}]
   }).resource("instrument",{
     name: String
+  }).resource("na-na-na-na",{
+    batman: String
   });
 };
