@@ -147,7 +147,7 @@ module.exports = function(util){
       });
     });
 
-    it("reformats dashed resource names", function(done){
+    it("camelcases dashed resource names", function(done){
       client.getNaNaNaNas().then(function(data){
         data["na-na-na-nas"].length.should.be.above(0);
         done();
