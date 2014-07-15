@@ -29,14 +29,22 @@ module.exports = function(util){
 
       it("gets a single document", function(done){
         crud.getResources(0,{opts:true})().then(function(){
-          fortune.direct.get.calledWith("resources",{id: 0, opts: true}).should.be.true;
+          fortune.direct.get.calledWith("resources",{
+            params: {id: 0},
+            opts: true,
+            query: {}
+          }).should.be.true;
           done();
         });
       });
 
       it("gets a collection of documents", function(done){
         crud.getResources(null,{opts:true})().then(function(){
-          fortune.direct.get.calledWith("resources",{opts: true, query: null}).should.be.true;
+          fortune.direct.get.calledWith("resources",{
+            opts: true,
+            query: {},
+            params: {}
+          }).should.be.true;
           done();
         });
       });
@@ -45,7 +53,9 @@ module.exports = function(util){
         crud.createResources({data:1},{opts:1})().then(function(){
           fortune.direct.create.calledWith("resources", {
             body: {resources:  [{data:1}]},
-            opts:1
+            opts:1,
+            query: {},
+            params: {}
           }).should.be.true;
           done();
         });
@@ -53,7 +63,11 @@ module.exports = function(util){
 
       it("destroys a document", function(done){
         crud.destroyResources(0, {opts:1})().then(function(){
-          fortune.direct.destroy.calledWith("resources", {id: 0, opts: 1}).should.be.true;
+          fortune.direct.destroy.calledWith("resources", {
+            params: {id: 0},
+            opts: 1,
+            query: {}
+          }).should.be.true;
           done();
         });
       });
@@ -61,9 +75,10 @@ module.exports = function(util){
       it("replaces a document", function(done){
         crud.replaceResources(0,{data:1},{opts:1})().then(function(){
           fortune.direct.replace.calledWith("resources", {
-            id: 0,
+            params: {id: 0},
             body: {resources: [{data:1}]},
-            opts:1
+            opts:1,
+            query: {}
           }).should.be.true;
           done();
         });
@@ -72,9 +87,10 @@ module.exports = function(util){
       it("updates a document", function(done){
         crud.updateResources(0, {data:1}, {opts:1})().then(function(){
           fortune.direct.update.calledWith("resources", {
-            id: 0,
+            params: {id: 0},
             body:[{data:1}],
-            opts:1
+            opts:1,
+            query: {}
           }).should.be.true;
           done();
         });

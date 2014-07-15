@@ -5,6 +5,7 @@ var should = require("should"),
 
 describe("INTEGRATION TESTS", function(){
   before(function(done){
+    this.timeout(5000);
     setup.initialiseFortunes().then(done);
   });
 

@@ -82,8 +82,8 @@ udpateUsers("Joe", {op: "add", path: "/users/0/houses/-", value: "1 Elm Row"})
 ```
 getResource(null, {
   headers: { "content-type": "application/json" }, // set any headers on the underlying request
-  params: {id: 1}, // set request parameters
-  query: {filter: {name: "Joe"}}, //query string parameters
+  fields: ["firstName", "lastName"],
+  include: ["ref1", "ref2"]
 })
 ```
 

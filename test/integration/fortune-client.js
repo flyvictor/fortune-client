@@ -10,8 +10,8 @@ module.exports = function(util){
 
     beforeEach(function(done){
 
-      client = fortuneClient([setup.apps.users.fortune,
-                              setup.apps.bands.fortune]);
+      util.client = client = fortuneClient([setup.apps.users.fortune,
+                                            setup.apps.bands.fortune]);
 
       client.ready.then(function(){
         resourceNames = _.pluck(_.union.apply(_,_.map(setup.apps, function(app){
@@ -23,7 +23,7 @@ module.exports = function(util){
             ids[name] = _.pluck(documents, "id");
           });
         });
-
+        util.ids = ids;
         done();
       });
     });
@@ -131,23 +131,6 @@ module.exports = function(util){
       }).catch(function(err){ console.trace(err); });;
     });
 
-    it("links external resources", function(done){
-      client.updateBands(ids.bands[0], [{
-        op: "add",
-        path: "/bands/0/members/-",
-        value: ids.users[0]
-      }]).then(function(){
-        return client.getBands(ids.bands[0],{query: {include:"members"}});
-      }).then(function(body){
-        body.linked.should.be.an.Object;
-        body.linked.users.should.be.an.Array;
-        body.linked.users.length.should.equal(1);
-        body.linked.users[0].id.should.be.equal(ids.users[0]);
-
-        done();
-      });
-    });
-
     it("returns JSON-compatible objects", function(done){
       client.getUsers().then(function(data){
         JSON.stringify(data).should.be.ok;
@@ -161,6 +144,28 @@ module.exports = function(util){
         done();
       });
     });
+
+    it("supports the light syntax for fields", function(done){
+      client.getUsers(null, {fields: "name"}).then(function(data){
+        var fields = _.keys(data.users[0]);
+        
+        fields.length.should.be.equal(2); // id is included regardless of fields
+        _.contains(fields, "name").should.be.true;
+        _.contains(fields, "id").should.be.true;
+        
+        return client.getUsers(null, {fields: ["name", "email"]});
+      }).then(function(data){
+        var fields = _.keys(data.users[0]);
+        
+        fields.length.should.be.equal(3);
+        _.contains(fields, "name").should.be.true;
+        _.contains(fields, "id").should.be.true;
+        _.contains(fields, "email").should.be.true;          
+        done();
+      });
+    });
+
+    util.requireSpecs(__dirname, ["compound-documents"]);
   });
 };
 
