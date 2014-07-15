@@ -79,6 +79,18 @@ module.exports = function(util){
           done();
         });
       });
+
+      it("merges collection query into the request query filters", function(){
+        crud.getResources({foo: 1}, {filter: {bar: 1} })(function(request){
+          request.options.query.filter.should.be.eql({foo: 1});
+          should.not.exist(request.options.query.foo);
+        });
+
+        crud.destroyResources({foo: 1}, {filter: {bar: 1} })(function(request){
+          request.options.query.filter.should.be.eql({foo: 1});
+          should.not.exist(request.options.query.foo);
+        });
+      });
     });
   });
 };

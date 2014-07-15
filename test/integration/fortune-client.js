@@ -40,6 +40,14 @@ module.exports = function(util){
       }).catch(function(err){ console.trace(err); });;
     });
 
+    it("allows getting a document based on a query", function(done){
+      client.getUsers({name: "Sweeney"}).then(function(data){
+        data.users.length.should.be.equal(1);
+        data.users[0].name.should.be.equal("Sweeney");
+        done();
+      });
+    });
+
     it("allows getting a single document", function(done){
       var id = ids.users[0];
 
