@@ -80,6 +80,18 @@ module.exports = function(util){
       });
     });
 
+    it("allows creating a single document", function(done){
+      var user = {
+        name: "Sam",
+        email: "sam@abc.com"
+      };
+
+      client.createUsers(user).then(function(data){
+        data.users.length.should.be.equal(1);
+        done();
+      });
+    });
+
     it("allows destroying a document", function(done){
       var count, id;
       
