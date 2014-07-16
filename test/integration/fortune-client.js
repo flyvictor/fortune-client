@@ -51,7 +51,7 @@ module.exports = function(util){
     it("allows getting a single document", function(done){
       var id = ids.users[0];
 
-      client.getUsers(id).then(function(data){
+      client.getUser(id).then(function(data){
         data.users.length.should.be.equal(1);
         data.users[0].id.should.be.equal(id);
         done();
@@ -86,7 +86,7 @@ module.exports = function(util){
         email: "sam@abc.com"
       };
 
-      client.createUsers(user).then(function(data){
+      client.createUser(user).then(function(data){
         data.users.length.should.be.equal(1);
         done();
       });
@@ -98,7 +98,7 @@ module.exports = function(util){
       client.getUsers().then(function(data){
         count = data.users.length;
         count.should.be.above(0);
-        return client.destroyUsers(id = data.users[0].id);
+        return client.destroyUser(id = data.users[0].id);
       }).then(function(){
         return client.getUsers();
       }).then(function(data){
@@ -120,11 +120,11 @@ module.exports = function(util){
     it("allows replacing a document", function(done){
       var user;
       
-      client.getUsers(ids.users[0]).then(function(data){
+      client.getUser(ids.users[0]).then(function(data){
         user = data.users[0];
-        return client.replaceUsers(user.id, _.extend({}, user, {name: "1234"}));
+        return client.replaceUser(user.id, _.extend({}, user, {name: "1234"}));
       }).then(function(data){
-        return client.getUsers(ids.users[0]);
+        return client.getUser(ids.users[0]);
       }).then(function(data){ 
         data.users[0].name.should.be.equal("1234");
         done();
@@ -132,7 +132,7 @@ module.exports = function(util){
     });
 
     it("allows updating a document", function(done){
-      client.updateUsers(ids.users[0], [{
+      client.updateUser(ids.users[0], [{
         op: "add",
         path: "/users/0/instruments/-",
         value: ids.instruments[0]
