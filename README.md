@@ -59,7 +59,7 @@ Replaces the resource data for a given id with a provided document
 
 Example:
 ```
-replaceUsers("Joe", { name: "Alice", sexChangedOn: "2011-10-09"})
+replaceUser("Joe", { name: "Alice", sexChangedOn: "2011-10-09"})
 ```
 
 ### Update
@@ -73,7 +73,7 @@ Updates a given resource.
 Example:
 
 ```
-udpateUsers("Joe", {op: "add", path: "/users/0/houses/-", value: "1 Elm Row"})
+udpateUser("Joe", {op: "add", path: "/users/0/houses/-", value: "1 Elm Row"})
 ```
 
 
