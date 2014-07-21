@@ -18,7 +18,8 @@
     "fortune": "git://github.com/flyvictor/fortune.git",
     "lodash": "~2.4.1",
     "when": "~3.2.3",
-    "requesto": "~0.0.1"
+    "requesto": "~0.0.1",
+    "mongoose": "~3.8.13"
   },
   "devDependencies":{
     "mocha": "~1.20.1",
