@@ -109,6 +109,24 @@ module.exports = function(util){
       });
     });
 
+    it("allows destroying a set of documents", function(done){
+      var ids, count;
+      
+      client.getUsers().then(function(data){
+        count = data.users.length;
+        ids = [data.users[0].id,data.users[1].id];
+
+        return client.destroyUsers(ids);
+      }).then(function(){
+        return client.getUsers();
+      }).then(function(data){
+        data.users.length.should.be.equal(count-2);
+        _.contains(_.pluck(data.users, "id"), ids[0]).should.be.false;
+        _.contains(_.pluck(data.users, "id"), ids[1]).should.be.false;
+        done();
+      });
+    });
+
     it("allows destroying a collection", function(done){
       client.destroyUsers().then(function(){
         return client.getUsers();
@@ -117,6 +135,7 @@ module.exports = function(util){
         done();
       });
     });
+
 
     it("allows replacing a document", function(done){
       var user;

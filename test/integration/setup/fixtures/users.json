@@ -5,6 +5,9 @@
   }, {
     "name": "Alice",
     "email": "alice@abc.com"
+  }, {
+    "name": "Bob",
+    "email": "bob@abc.com"
   }],
   "addresses": [{
     "houseNumber": 186,
