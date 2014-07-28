@@ -110,18 +110,6 @@ module.exports = function(util){
         });
       });
 
-      it("sets security object", function(done){
-        crud = crudFactory(fortune, [{name: "resource", route: "resources"}], {id: 1});
-        crud.getResources(1, {})().then(function(){
-          fortune.direct.get.calledWith("resources", {
-            params: {id: 1},
-            query: {},
-            security: {requestedWith: 1}
-          }).should.be.true;
-          done();
-        });
-      });
-
       it("merges collection query into the request query filters", function(){
         crud.getResources({foo: 1}, {filter: {bar: 1} })(function(request){
           request.options.query.filter.should.be.eql({foo: 1});
