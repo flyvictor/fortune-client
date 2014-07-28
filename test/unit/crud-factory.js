@@ -6,6 +6,7 @@ var crudFactory = require("../../lib/crud-factory"),
 module.exports = function(util){
   describe("crud", function(){
     describe("with local fortune", function(){
+      var crud;
       var mixin, fortune = {
         direct: {
           get: function(){},
@@ -91,6 +92,31 @@ module.exports = function(util){
             body:[{data:1}],
             opts:1,
             query: {}
+          }).should.be.true;
+          done();
+        });
+      });
+
+      it("passes auth credentials", function(done){
+        crud.getResources(1, {access: {policy: ["default"]}})().then(function(){
+          fortune.direct.get.calledWith("resources", {
+            params: {id: 1},
+            query: {},
+            access: {
+              policy: ["default"]
+            }
+          }).should.be.true;
+          done();
+        });
+      });
+
+      it("sets security object", function(done){
+        crud = crudFactory(fortune, [{name: "resource", route: "resources"}], {id: 1});
+        crud.getResources(1, {})().then(function(){
+          fortune.direct.get.calledWith("resources", {
+            params: {id: 1},
+            query: {},
+            security: {requestedWith: 1}
           }).should.be.true;
           done();
         });
