@@ -29,6 +29,10 @@ module.exports = function(util){
       });
     });
 
+    it("should have generated id", function(){
+      _.isString(client.id).should.equal(true);
+    });
+
     it("requests resource metadata", function(){
       _.pluck(client.resources, "name").should.be.eql(resourceNames);
     });
