@@ -17,8 +17,7 @@
   "dependencies":{
     "lodash": "~2.4.1",
     "when": "~3.2.3",
-    "requesto": "~0.0.1",
-    "mongoose": "~3.8.13"
+    "requesto": "~0.0.1"
   },
   "devDependencies":{
     "fortune": "git://github.com/flyvictor/fortune.git#v1.4.6",

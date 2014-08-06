@@ -1,8 +1,8 @@
 var setup = require("./setup"),
     should = require("should"),
     fortuneClient = require("../../lib/fortune-client"),
-    _ = require("lodash"),
-    mongoose = require("mongoose");
+    _ = require("lodash");
+
 
 
 module.exports = function(util){
@@ -197,23 +197,6 @@ module.exports = function(util){
         _.contains(fields, "name").should.be.true;
         _.contains(fields, "id").should.be.true;
         _.contains(fields, "email").should.be.true;          
-        done();
-      });
-    });
-
-    it("allows getting a resource by ObjectId", function(done){
-      client.getAddress(mongoose.Types.ObjectId(ids.addresses[0])).then(function(data){
-        data.addresses.length.should.be.equal(1);;
-        done();
-      });
-    });
-
-    it("allows getting a collection of resources by ObjectId", function(done){
-      client.getAddresses([
-        mongoose.Types.ObjectId(ids.addresses[0]),
-        mongoose.Types.ObjectId(ids.addresses[1])
-      ]).then(function(data){
-        data.addresses.length.should.be.equal(2);
         done();
       });
     });
