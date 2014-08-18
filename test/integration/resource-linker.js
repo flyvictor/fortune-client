@@ -148,7 +148,7 @@ describe("fortune resource linker", function(){
 
   it("should return body for no includes", function(done){
     var body = {people: [{email: "test@test.com"}]};
-    trigger({options: {}}, {body: body}).then(function(body){
+    trigger({request: {}}, {body: body}).then(function(body){
       body.should.eql(body);
       done();
     });
