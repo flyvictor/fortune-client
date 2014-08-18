@@ -137,18 +137,18 @@ describe("fortune resource linker", function(){
       router.actions.getAircraft.callCount.should.equal(1);
       var aircraft = router.actions.getAircraft.getCall(0);
       aircraft.args[0].should.eql(["OE-GGP"]);
-      aircraft.args[1].should.eql({include: "images"});
+      aircraft.args[1].should.eql({include: "images", user: undefined});
       router.actions.getOperators.callCount.should.equal(1);
       var operators = router.actions.getOperators.getCall(0);
       operators.args[0].should.eql(["12345"]);
-      operators.args[1].should.eql({include: ""});
+      operators.args[1].should.eql({include: "", user: undefined});
       done();
     });
   });
 
   it("should return body for no includes", function(done){
     var body = {people: [{email: "test@test.com"}]};
-    trigger({options: {}}, {body: body}).then(function(body){
+    trigger({request: {}}, {body: body}).then(function(body){
       body.should.eql(body);
       done();
     });
