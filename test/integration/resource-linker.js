@@ -132,8 +132,8 @@ describe("fortune resource linker", function(){
 
   it('should try to fetch linked resources once for each type and with unique ids', function(done){
 
-    var includes = ['aircraft', 'aircraft.images', 'employer'];
-    linker.fetchExternals(includes, stubs().bodyWithExternals).then(function(){
+    var includes = ['aircraft', 'aircraft.images', 'employer'].join(',');
+    linker.fetchExternals({query: {include: includes}}, stubs().bodyWithExternals).then(function(){
       router.actions.getAircraft.callCount.should.equal(1);
       var aircraft = router.actions.getAircraft.getCall(0);
       aircraft.args[0].should.eql(["OE-GGP"]);
@@ -162,9 +162,9 @@ describe("fortune resource linker", function(){
   });
 
   it("should attach resource linked data for external include", function(done){
-    var includes = ["aircraft", "employer"];
+    var includes = ["aircraft", "employer"].join(',');
 
-    linker.fetchExternals(includes, stubs().bodyWithExternals).then(function(merged){
+    linker.fetchExternals({query: {include: includes}}, stubs().bodyWithExternals).then(function(merged){
       merged.linked.aircraft[0].id.should.equal("OE-GGP");
       merged.linked.operators[0].id.should.equal("12345");
       done();
