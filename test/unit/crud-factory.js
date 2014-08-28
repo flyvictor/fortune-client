@@ -3,6 +3,9 @@ var crudFactory = require("../../lib/crud-factory"),
     should = require("should"),
     when = require("when");
 
+
+//REFACTOR: DRY diff syntax - same request tests.
+
 module.exports = function(util){
   describe("crud", function(){
     describe("with local fortune", function(){
@@ -113,14 +116,14 @@ module.exports = function(util){
       });
 
       it("merges collection query into the request query filters", function(){
-        crud.getResources({foo: 1}, {filter: {bar: 1} })(function(request){
-          request.options.query.filter.should.be.eql({foo: 1});
-          should.not.exist(request.options.query.foo);
+        crud.getResources({foo: 1}, {filter: {bar: 1} })(function(config){
+          config.request.query.filter.should.be.eql({foo: 1});
+          should.not.exist(config.request.query.foo);
         });
 
-        crud.destroyResources({foo: 1}, {filter: {bar: 1} })(function(request){
-          request.options.query.filter.should.be.eql({foo: 1});
-          should.not.exist(request.options.query.foo);
+        crud.destroyResources({foo: 1}, {filter: {bar: 1} })(function(config){
+          config.request.query.filter.should.be.eql({foo: 1});
+          should.not.exist(config.request.query.foo);
         });
       });
 
@@ -195,17 +198,87 @@ module.exports = function(util){
         });
 
         it("merges collection query into the request query filters", function(){
-          crud.getSingularOnly({foo: 1}, {filter: {bar: 1} })(function(request){
-            request.options.query.filter.should.be.eql({foo: 1});
-            should.not.exist(request.options.query.foo);
+          crud.getSingularOnly({foo: 1}, {filter: {bar: 1} })(function(config){
+            config.request.query.filter.should.be.eql({foo: 1});
+            should.not.exist(config.request.query.foo);
           });
 
-          crud.destroySingularOnly({foo: 1}, {filter: {bar: 1} })(function(request){
-            request.options.query.filter.should.be.eql({foo: 1});
-            should.not.exist(request.options.query.foo);
+          crud.destroySingularOnly({foo: 1}, {filter: {bar: 1} })(function(config){
+            config.request.query.filter.should.be.eql({foo: 1});
+            should.not.exist(config.request.query.foo);
           });
         });
-        
+
+        describe("alternative programmatic syntax", function(){
+          it("gets a single document", function(done){
+            crud.get("resources",0,{opts:true})().then(function(){
+              fortune.direct.get.calledWith("resources",{
+                params: {id: 0},
+                opts: true,
+                query: {}
+              }).should.be.true;
+              done();
+            });
+          });
+
+          it("gets a collection of documents", function(done){
+            crud.get("resources",null,{opts:true})().then(function(){
+              fortune.direct.get.calledWith("resources",{
+                opts: true,
+                query: {},
+                params: {}
+              }).should.be.true;
+              done();
+            });
+          });
+
+          it("creates a document", function(done){
+            crud.create("resources",{data:1},{opts:1})().then(function(){
+              fortune.direct.create.calledWith("resources", {
+                body: {resources:  [{data:1}]},
+                opts:1,
+                query: {},
+                params: {}
+              }).should.be.true;
+              done();
+            }).catch(function(err){ console.trace(err); });
+          });
+
+          it("destroys a document", function(done){
+            crud.destroy("resources",0, {opts:1})().then(function(){
+              fortune.direct.destroy.calledWith("resources", {
+                params: {id: 0},
+                opts: 1,
+                query: {}
+              }).should.be.true;
+              done();
+            });
+          });
+
+          it("replaces a document", function(done){
+            crud.replace("resources",0,{data:1},{opts:1})().then(function(){
+              fortune.direct.replace.calledWith("resources", {
+                params: {id: 0},
+                body: {resources: [{data:1}]},
+                opts:1,
+                query: {}
+              }).should.be.true;
+              done();
+            });
+          });
+
+          it("updates a document", function(done){
+            crud.update("resources",0, {data:1}, {opts:1})().then(function(){
+              fortune.direct.update.calledWith("resources", {
+                params: {id: 0},
+                body:[{data:1}],
+                opts:1,
+                query: {}
+              }).should.be.true;
+              done();
+            });
+          });
+        });
       });
     });
   });
