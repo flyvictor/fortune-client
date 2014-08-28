@@ -20,7 +20,7 @@
     "requesto": "~0.0.1"
   },
   "devDependencies":{
-    "fortune": "git://github.com/flyvictor/fortune.git#v1.4.6",
+    "fortune": "git://github.com/flyvictor/fortune.git#bf524880cc1e71d5ba2ebd8a84371295ca61b773",
     "mocha": "~1.20.1",
     "should": "~4.0.4",
     "supertest": "~0.13.0",

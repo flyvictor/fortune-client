@@ -201,6 +201,23 @@ module.exports = function(util){
       });
     });
 
+    it("supports $exists query", function(done){
+      client.getUsers({name: {$exists: true}}).then(function(data){
+        data.users.length.should.equal(3);
+        done();
+      });
+    });
+    it("supports $exists query against references", function(done){
+      client.updateBand(ids.bands[0], [{op: "replace", path: "/bands/0/links/leader", value: ids.users[0]}])
+        .then(function(result){
+          result.bands[0].links.leader.should.equal(ids.users[0]);
+          client.getBands({leader: {$exists: true}}).then(function(data){
+            data.bands.length.should.equal(1);
+            done();
+          });
+        });
+    });
+
     util.requireSpecs(__dirname, ["compound-documents"]);
   });
 };

@@ -5,6 +5,7 @@ module.exports = function(){
       "mongodb://localhost/fortune-client-test-bands"
   }).resource("band",{
     name: String,
+    leader: {ref: "user", external: "true", type: String},
     members: [{ref: "user", external: "true", type: String}],
     genres: [{ref: "genre"}]
   }).resource("genre", {
