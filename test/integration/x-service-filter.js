@@ -17,15 +17,15 @@ describe("cross service filtering", function(){
     done();
   });
   it('should always call through if no filter is defined', function(done){
-    xServiceFilter.inspectRequest({options: {query: {}}}).then(function(){
+    xServiceFilter.inspectRequest({request: {query: {}}}).then(function(){
       done();
     });
   });
   it('should catch requests with filter', function(done){
     sandbox.stub(xServiceFilter, "resolveReferencesFilters").returns(when.resolve('stub'));
-    var req = {options: {query: {filter: {}}}};
+    var req = {request: {query: {filter: {}}}};
     xServiceFilter.inspectRequest(req).then(function(){
-      req.options.query.filter.should.equal('stub');
+      req.request.query.filter.should.equal('stub');
       sandbox.restore();
       done();
     });
@@ -38,7 +38,7 @@ describe("cross service filtering", function(){
     ]}, {onRequest: function(){}});
     var config = {
       route: "bands",
-      options: {query: {filter: {members: {name: "Joe"}}}}
+      request: {query: {filter: {members: {name: "Joe"}}}}
     };
     xServiceFilter.resolveReferencesFilters(config).then(function(filter){
       filter.members.should.eql({$in: ["resourceId"]});
@@ -54,10 +54,10 @@ describe("cross service filtering", function(){
     ]}, {onRequest: function(){}});
     var config = {
       route: "bands",
-      options: {query: {filter: {members: {name: "Joe"}}}}
+      request: {query: {filter: {members: {name: "Joe"}}}}
     };
     xServiceFilter.inspectRequest(config).then(function(){
-      config.options.query.filter.members.should.eql({$in: ["resourceId"]});
+      config.request.query.filter.members.should.eql({$in: ["resourceId"]});
       sandbox.restore();
       done();
     });
@@ -70,10 +70,10 @@ describe("cross service filtering", function(){
     ]}, {onRequest: function(){}});
     var config = {
       route: "bands",
-      options: {query: {filter: {$or: [{members: {name: "Joe"}}]}}}
+      request: {query: {filter: {$or: [{members: {name: "Joe"}}]}}}
     };
     xServiceFilter.inspectRequest(config).then(function(){
-      config.options.query.filter.id.should.eql({
+      config.request.query.filter.id.should.eql({
         $in: ["resourceId"]
       });
       sandbox.restore();
@@ -88,10 +88,10 @@ describe("cross service filtering", function(){
     ]}, {onRequest: function(){}});
     var config = {
       route: "bands",
-      options: {query: {filter: {$and: [{members: {name: "Joe"}}]}}}
+      request: {query: {filter: {$and: [{members: {name: "Joe"}}]}}}
     };
     xServiceFilter.inspectRequest(config).then(function(){
-      config.options.query.filter.id.should.eql({
+      config.request.query.filter.id.should.eql({
         $in: ["resourceId"]
       });
       sandbox.restore();
@@ -106,10 +106,10 @@ describe("cross service filtering", function(){
     ]}, {onRequest: function(){}});
     var config = {
       route: "bands",
-      options: {query: {filter: {members: {pets: {$in: ["petId"]}}}}}
+      request: {query: {filter: {members: {pets: {$in: ["petId"]}}}}}
     };
     xServiceFilter.inspectRequest(config).then(function(){
-      config.options.query.filter.members.should.eql({$in: ["resourceId"]});
+      config.request.query.filter.members.should.eql({$in: ["resourceId"]});
       sandbox.restore();
       done();
     });
