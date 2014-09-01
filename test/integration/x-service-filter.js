@@ -37,7 +37,7 @@ describe("cross service filtering", function(){
       {name: "band", route: "bands", schema: {members: [{ref: "user", external: true}]}}
     ]}, {onRequest: function(){}});
     var config = {
-      route: "bands",
+      resource: "bands",
       request: {query: {filter: {members: {name: "Joe"}}}}
     };
     xServiceFilter.resolveReferencesFilters(config).then(function(filter){
@@ -53,7 +53,7 @@ describe("cross service filtering", function(){
       {name: "band", route: "bands", schema: {members: [{ref: "user", external: true}]}}
     ]}, {onRequest: function(){}});
     var config = {
-      route: "bands",
+      resource: "bands",
       request: {query: {filter: {members: {name: "Joe"}}}}
     };
     xServiceFilter.inspectRequest(config).then(function(){
@@ -69,7 +69,7 @@ describe("cross service filtering", function(){
       {name: "band", route: "bands", schema: {members: [{ref: "user", external: true}]}}
     ]}, {onRequest: function(){}});
     var config = {
-      route: "bands",
+      resource: "bands",
       request: {query: {filter: {$or: [{members: {name: "Joe"}}]}}}
     };
     xServiceFilter.inspectRequest(config).then(function(){
@@ -87,7 +87,7 @@ describe("cross service filtering", function(){
       {name: "band", route: "bands", schema: {members: [{ref: "user", external: true}]}}
     ]}, {onRequest: function(){}});
     var config = {
-      route: "bands",
+      resource: "bands",
       request: {query: {filter: {$and: [{members: {name: "Joe"}}]}}}
     };
     xServiceFilter.inspectRequest(config).then(function(){
@@ -105,7 +105,7 @@ describe("cross service filtering", function(){
       {name: "band", route: "bands", schema: {members: [{ref: "user", external: true}]}}
     ]}, {onRequest: function(){}});
     var config = {
-      route: "bands",
+      resource: "bands",
       request: {query: {filter: {members: {pets: {$in: ["petId"]}}}}}
     };
     xServiceFilter.inspectRequest(config).then(function(){
