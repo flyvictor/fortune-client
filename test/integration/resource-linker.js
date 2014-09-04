@@ -137,11 +137,11 @@ describe("fortune resource linker", function(){
       router.actions.getAircraft.callCount.should.equal(1);
       var aircraft = router.actions.getAircraft.getCall(0);
       aircraft.args[0].should.eql(["OE-GGP"]);
-      aircraft.args[1].should.eql({include: "images", user: undefined});
+      aircraft.args[1].should.eql({include: "images"});
       router.actions.getOperators.callCount.should.equal(1);
       var operators = router.actions.getOperators.getCall(0);
       operators.args[0].should.eql(["12345"]);
-      operators.args[1].should.eql({include: "", user: undefined});
+      operators.args[1].should.eql({include: ""});
       done();
     });
   });
