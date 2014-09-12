@@ -201,6 +201,28 @@ module.exports = function(util){
       });
     });
 
+    it("passes the parent request context option to onRequest", function(done){
+      var parent = { parentRequest: "is me" };
+      
+      client.onRequest(function(config){
+        config.parentRequest.should.be.equal(parent);
+        done();
+      });
+
+      client.getUsers(null, {parentRequest: parent});
+    });
+
+    it("passes the parent request context option to onResponse", function(done){
+      var parent = { parentRequest: "is me" };
+      
+      client.onResponse(function(config){
+        config.parentRequest.should.be.equal(parent);
+        done();
+      });
+
+      client.getUsers(null, {parentRequest: parent});
+    });
+
     util.requireSpecs(__dirname, ["compound-documents"]);
   });
 };
