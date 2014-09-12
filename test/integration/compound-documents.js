@@ -34,6 +34,7 @@ module.exports = function(util){
       });
     });
 
+
     it("support the light syntax for includes", function(done){
       return client.getBand(ids.bands[0],{include:"members"}).then(function(body){
         body.linked.should.be.an.Object;
@@ -75,5 +76,6 @@ module.exports = function(util){
         done();
       });
     });
+
   });
 };
