@@ -24,13 +24,22 @@ module.exports = function(util){
     });
     
     it("are linked externally", function(done){
-      client.getBand(ids.bands[0],{query: {include:"members"}}).then(function(body){
+      client.getBand(ids.bands[0],{include:"members"}).then(function(body){
         body.linked.should.be.an.Object;
         body.linked.users.should.be.an.Array;
         body.linked.users.length.should.equal(1);
         body.linked.users[0].id.should.be.equal(ids.users[0]);
 
         done();
+      });
+    });
+
+
+    //experimental: for now will only link the primary resource
+    it("support shallow auto-linking", function(done){
+      client.getBand(ids.bands[0],{include:"members", autoLink: true}).then(function(body){
+        body.bands[0].users.length.should.equal(1);
+        body.bands[0].users[0].id.should.be.equal(ids.users[0]);
       });
     });
 
