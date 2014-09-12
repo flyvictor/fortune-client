@@ -50,5 +50,27 @@ module.exports = function(util){
         done();
       });
     });
+
+    it("can be created in one call", function(done){
+      client.createBand({
+        name: "New band",
+        genres: [0,2]
+      }, {
+        linked: {
+          genres: [
+            {id: 0, name: "genre0"},
+            {id: 1, name: "genre1"},
+            {id: 2, name: "genre2"}
+          ]
+        }
+      }).then(function(data){
+        return client.getBand(data.bands[0].id, {include: "genres"});
+      }).then(function(data){
+        data.band.links.genres.length.should.be.equal(2);
+        data.linked.genres.length.shoulb.be.equal(2);
+
+        _.pluck(data.linked.genres, "name").should.containDeep(["genre0","genre2"]);
+      });
+    });
   });
 };
