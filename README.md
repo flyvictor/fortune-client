@@ -1,6 +1,10 @@
 # Fortune Client
 Library for interacting with multiple instances of Fortune
 
+
+Note: this documentation is hopelessly out of date. Update is in the works but for now you'd be better off looking at the tests if you need examples.
+
+
 ## Initialisation
 
 ```
