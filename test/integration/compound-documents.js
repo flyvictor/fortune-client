@@ -1,3 +1,5 @@
+var _ = require("lodash");
+
 module.exports = function(util){
   describe("compound documents", function(){
     var client, ids;
@@ -32,6 +34,7 @@ module.exports = function(util){
       });
     });
 
+
     it("support the light syntax for includes", function(done){
       return client.getBand(ids.bands[0],{include:"members"}).then(function(body){
         body.linked.should.be.an.Object;
@@ -50,5 +53,29 @@ module.exports = function(util){
         done();
       });
     });
+
+    it("can be created in one call", function(done){
+      client.createBand({
+        name: "New band",
+        genres: [0,2]
+      }, {
+        linked: {
+          genres: [
+            {id: 0, name: "genre0"},
+            {id: 1, name: "genre1"},
+            {id: 2, name: "genre2"}
+          ]
+        }
+      }).then(function(data){
+        return client.getBand(data.bands[0].id, {include: "genres"});
+      }).then(function(data){
+        data.bands[0].links.genres.length.should.be.equal(2);
+        data.linked.genres.length.should.be.equal(2);
+
+        _.pluck(data.linked.genres, "name").should.containDeep(["genre0","genre2"]);
+        done();
+      });
+    });
+
   });
 };
