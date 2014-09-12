@@ -210,6 +210,17 @@ module.exports = function(util){
         });
       });
 
+      describe("parent request", function(){
+        it("is passed through to the crud callback", function(done){
+          var parent = {parentRequest: "is me"};
+          
+          crud.getResource(0, {parentRequest: parent})(function(config){
+            config.parentRequest.should.be.equal(parent);
+            done();
+          });
+        });
+      });
+
       describe("alternative programmatic syntax", function(){
         it("gets a single document", function(done){
           crud.get("resources",0,{opts:true})().then(function(){
