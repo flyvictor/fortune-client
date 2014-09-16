@@ -24,7 +24,8 @@ module.exports = function(util){
         crud = crudFactory(fortune, [
           {name: "resource", route: "resources"},
           {name: "singular-only", route: "singular-only"}
-        ]);
+        ], ["get", "create", "replace", "update", "destroy"]);
+
         util.sandbox.stub(fortune.direct, "get").returns(when.resolve());
         util.sandbox.stub(fortune.direct, "create").returns(when.resolve());
         util.sandbox.stub(fortune.direct, "destroy").returns(when.resolve());
@@ -34,7 +35,7 @@ module.exports = function(util){
       
 
       it("gets a single document", function(done){
-        crud.getResource(0,{opts:true})().then(function(){
+        crud.fancy.getResource(0,{opts:true})().then(function(){
           fortune.direct.get.calledWith("resources",{
             params: {id: 0},
             opts: true,
@@ -45,7 +46,7 @@ module.exports = function(util){
       });
 
       it("gets a collection of documents", function(done){
-        crud.getResources(null,{opts:true})().then(function(){
+        crud.fancy.getResources(null,{opts:true})().then(function(){
           fortune.direct.get.calledWith("resources",{
             opts: true,
             query: {},
@@ -56,7 +57,7 @@ module.exports = function(util){
       });
 
       it("creates a document", function(done){
-        crud.createResource({data:1},{opts:1})().then(function(){
+        crud.fancy.createResource({data:1},{opts:1})().then(function(){
           fortune.direct.create.calledWith("resources", {
             body: {resources:  [{data:1}]},
             opts:1,
@@ -68,7 +69,7 @@ module.exports = function(util){
       });
 
       it("destroys a document", function(done){
-        crud.destroyResource(0, {opts:1})().then(function(){
+        crud.fancy.destroyResource(0, {opts:1})().then(function(){
           fortune.direct.destroy.calledWith("resources", {
             params: {id: 0},
             opts: 1,
@@ -79,7 +80,7 @@ module.exports = function(util){
       });
 
       it("replaces a document", function(done){
-        crud.replaceResource(0,{data:1},{opts:1})().then(function(){
+        crud.fancy.replaceResource(0,{data:1},{opts:1})().then(function(){
           fortune.direct.replace.calledWith("resources", {
             params: {id: 0},
             body: {resources: [{data:1}]},
@@ -91,7 +92,7 @@ module.exports = function(util){
       });
 
       it("updates a document", function(done){
-        crud.updateResource(0, {data:1}, {opts:1})().then(function(){
+        crud.fancy.updateResource(0, {data:1}, {opts:1})().then(function(){
           fortune.direct.update.calledWith("resources", {
             params: {id: 0},
             body:[{data:1}],
@@ -103,7 +104,7 @@ module.exports = function(util){
       });
 
       it("passes auth credentials", function(done){
-        crud.getResource(1, {access: {policy: ["default"]}})().then(function(){
+        crud.fancy.getResource(1, {access: {policy: ["default"]}})().then(function(){
           fortune.direct.get.calledWith("resources", {
             params: {id: 1},
             query: {},
@@ -116,12 +117,12 @@ module.exports = function(util){
       });
 
       it("merges collection query into the request query filters", function(){
-        crud.getResources({foo: 1}, {filter: {bar: 1} })(function(config){
+        crud.fancy.getResources({foo: 1}, {filter: {bar: 1} })(function(config){
           config.request.query.filter.should.be.eql({foo: 1});
           should.not.exist(config.request.query.foo);
         });
 
-        crud.destroyResources({foo: 1}, {filter: {bar: 1} })(function(config){
+        crud.fancy.destroyResources({foo: 1}, {filter: {bar: 1} })(function(config){
           config.request.query.filter.should.be.eql({foo: 1});
           should.not.exist(config.request.query.foo);
         });
@@ -129,7 +130,7 @@ module.exports = function(util){
 
       describe("for single-form resources", function(){
         it("gets a single document", function(done){
-          crud.getSingularOnly(0,{opts:true})().then(function(){
+          crud.fancy.getSingularOnly(0,{opts:true})().then(function(){
             fortune.direct.get.calledWith("singular-only",{
               params: {id: 0},
               opts: true,
@@ -140,7 +141,7 @@ module.exports = function(util){
         });
 
         it("gets a collection of documents", function(done){
-          crud.getSingularOnly(null,{opts:true})().then(function(){
+          crud.fancy.getSingularOnly(null,{opts:true})().then(function(){
             fortune.direct.get.calledWith("singular-only",{
               opts: true,
               query: {},
@@ -151,7 +152,7 @@ module.exports = function(util){
         });
 
         it("creates a document", function(done){
-          crud.createSingularOnly({data:1},{opts:1})().then(function(){
+          crud.fancy.createSingularOnly({data:1},{opts:1})().then(function(){
             fortune.direct.create.calledWith("singular-only", {
               body: {"singular-only":  [{data:1}]},
               opts:1,
@@ -163,7 +164,7 @@ module.exports = function(util){
         });
 
         it("destroys a document", function(done){
-          crud.destroySingularOnly(0, {opts:1})().then(function(){
+          crud.fancy.destroySingularOnly(0, {opts:1})().then(function(){
             fortune.direct.destroy.calledWith("singular-only", {
               params: {id: 0},
               opts: 1,
@@ -174,7 +175,7 @@ module.exports = function(util){
         });
 
         it("replaces a document", function(done){
-          crud.replaceSingularOnly(0,{data:1},{opts:1})().then(function(){
+          crud.fancy.replaceSingularOnly(0,{data:1},{opts:1})().then(function(){
             fortune.direct.replace.calledWith("singular-only", {
               params: {id: 0},
               body: {"singular-only": [{data:1}]},
@@ -186,7 +187,7 @@ module.exports = function(util){
         });
 
         it("updates a document", function(done){
-          crud.updateSingularOnly(0, {data:1}, {opts:1})().then(function(){
+          crud.fancy.updateSingularOnly(0, {data:1}, {opts:1})().then(function(){
             fortune.direct.update.calledWith("singular-only", {
               params: {id: 0},
               body:[{data:1}],
@@ -198,12 +199,12 @@ module.exports = function(util){
         });
 
         it("merges collection query into the request query filters", function(){
-          crud.getSingularOnly({foo: 1}, {filter: {bar: 1} })(function(config){
+          crud.fancy.getSingularOnly({foo: 1}, {filter: {bar: 1} })(function(config){
             config.request.query.filter.should.be.eql({foo: 1});
             should.not.exist(config.request.query.foo);
           });
 
-          crud.destroySingularOnly({foo: 1}, {filter: {bar: 1} })(function(config){
+          crud.fancy.destroySingularOnly({foo: 1}, {filter: {bar: 1} })(function(config){
             config.request.query.filter.should.be.eql({foo: 1});
             should.not.exist(config.request.query.foo);
           });
@@ -214,16 +215,16 @@ module.exports = function(util){
         it("is passed through to the crud callback", function(done){
           var parent = {parentRequest: "is me"};
           
-          crud.getResource(0, {parentRequest: parent})(function(config){
+          crud.fancy.getResource(0, {parentRequest: parent})(function(config){
             config.parentRequest.should.be.equal(parent);
             done();
           });
         });
       });
 
-      describe("alternative programmatic syntax", function(){
+      describe("simple syntax", function(){
         it("gets a single document", function(done){
-          crud.get("resources",0,{opts:true})().then(function(){
+          crud.simple.get.resources(0,{opts:true})().then(function(){
             fortune.direct.get.calledWith("resources",{
               params: {id: 0},
               opts: true,
@@ -234,7 +235,7 @@ module.exports = function(util){
         });
 
         it("gets a collection of documents", function(done){
-          crud.get("resources",null,{opts:true})().then(function(){
+          crud.simple.get.resources(null,{opts:true})().then(function(){
             fortune.direct.get.calledWith("resources",{
               opts: true,
               query: {},
@@ -245,7 +246,7 @@ module.exports = function(util){
         });
 
         it("creates a document", function(done){
-          crud.create("resources",{data:1},{opts:1})().then(function(){
+          crud.simple.create.resources({data:1},{opts:1})().then(function(){
             fortune.direct.create.calledWith("resources", {
               body: {resources:  [{data:1}]},
               opts:1,
@@ -257,7 +258,7 @@ module.exports = function(util){
         });
 
         it("destroys a document", function(done){
-          crud.destroy("resources",0, {opts:1})().then(function(){
+          crud.simple.destroy.resources(0, {opts:1})().then(function(){
             fortune.direct.destroy.calledWith("resources", {
               params: {id: 0},
               opts: 1,
@@ -268,7 +269,7 @@ module.exports = function(util){
         });
 
         it("replaces a document", function(done){
-          crud.replace("resources",0,{data:1},{opts:1})().then(function(){
+          crud.simple.replace.resources(0,{data:1},{opts:1})().then(function(){
             fortune.direct.replace.calledWith("resources", {
               params: {id: 0},
               body: {resources: [{data:1}]},
@@ -280,7 +281,7 @@ module.exports = function(util){
         });
 
         it("updates a document", function(done){
-          crud.update("resources",0, {data:1}, {opts:1})().then(function(){
+          crud.simple.update.resources(0, {data:1}, {opts:1})().then(function(){
             fortune.direct.update.calledWith("resources", {
               params: {id: 0},
               body:[{data:1}],
