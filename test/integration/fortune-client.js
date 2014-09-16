@@ -223,6 +223,22 @@ module.exports = function(util){
       client.getUsers(null, {parentRequest: parent});
     });
 
+
+    it("supports alternative programmatic syntax", function(done){
+      client.getUsers().then(function(data){
+        client.get("users").then(function(data2){
+          data2.should.be.eql(data);
+        });
+      }).then(function(){
+        client.getBands().then(function(data){
+          client.get("bands").then(function(data2){
+            data2.should.be.eql(data);
+            done();
+          });
+        });
+      });
+    });
+
     util.requireSpecs(__dirname, ["compound-documents"]);
   });
 };
