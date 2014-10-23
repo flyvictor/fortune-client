@@ -23,7 +23,7 @@ Gets a single,a set of or all documents of a given resource depending on whether
 
 Example:
 ```
-getUsers({firstName: "John"}).then(function(data){
+client.getUsers({firstName: "John"}).then(function(data){
   ...
 });
 ```
@@ -39,7 +39,7 @@ Creates a new document. Returns a promise resolved with then new created documen
 
 Example:
 ```
-createUser({ name: "Bob", email: "bob@abc.com" })
+client.createUser({ name: "Bob", email: "bob@abc.com" })
 ```
 
 ### Destroy
@@ -53,7 +53,7 @@ Destroys a single, a set of or all documents of a given resource depending on wh
 
 Example:
 ```
-destroyUsers(["Alice", "Bob", "Charlie"])
+client.destroyUsers(["Alice", "Bob", "Charlie"])
 ```
 
 ### Replace
@@ -67,7 +67,7 @@ Replaces the resource data for a given id with a provided document
 
 Example:
 ```
-replaceUser("Joe", { name: "Alice", sexChangedOn: "2011-10-09"})
+client.replaceUser("Joe", { name: "Alice", sexChangedOn: "2011-10-09"})
 ```
 
 ### Update
@@ -82,14 +82,14 @@ Updates a given resource.
 Example:
 
 ```
-udpateUser("Joe", {op: "add", path: "/users/0/houses/-", value: "1 Elm Row"})
+client.udpateUser("Joe", {op: "add", path: "/users/0/houses/-", value: "1 Elm Row"})
 ```
 
 
 ## Options
 
 ```
-getResources(null, {
+client.getResources(null, {
   headers: { "content-type": "application/json" }, // set any headers on the underlying request
   fields: ["firstName", "lastName"],
   include: ["ref1", "ref2"]
