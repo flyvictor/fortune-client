@@ -77,5 +77,25 @@ module.exports = function(util){
       });
     });
 
+    it("should support POST body compatible interface", function(done){
+      client.createBands({
+        "bands": [
+          {name: "A Band", genres: [0,1]}
+        ],
+        "linked": {
+          genres: [
+            {id: 0, name: "g1"},
+            {id: 1, name: "g2"}
+          ]
+        }
+      }).then(function(data){
+        return client.getBand(data.bands[0].id, {include: "genres"})
+      }).then(function(data){
+        data.bands[0].links.genres.length.should.equal(2);
+        data.linked.genres.length.should.equal(2);
+        _.pluck(data.linked.genres, "name").should.containDeep(["g1","g2"]);
+        done();
+      });
+    });
   });
 };
