@@ -1,0 +1,16 @@
+{
+  "bands":[{
+    "name": "Schizophrenic Rabbits of Mordor"
+  },{
+    "name": "Goats Butter"
+  },{
+    "name": "Your neighbour's kid learning to play drums"
+  }],
+  "genres": [{
+    "name": "Psycho-country-metal"
+  },{
+    "name": "Alchopunk"
+  },{
+    "name": "Apocalyptic post-noise grindcore"
+  }]
+}

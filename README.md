@@ -96,3 +96,13 @@ client.getResources(null, {
 })
 ```
 
+#Running demo
+
+From fortune-client root folder run
+* git submodule init
+* git submodule update
+* npm install
+* cd demo/fortune
+* npm install
+* cd ../..
+* node demo/example-inproc.js
