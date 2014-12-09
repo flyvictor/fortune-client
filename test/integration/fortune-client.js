@@ -4,7 +4,6 @@ var setup = require("./setup"),
     _ = require("lodash");
 
 
-
 module.exports = function(util){
   describe("Fortune-client in proc", function(){
     var client, resourceNames, ids = {};

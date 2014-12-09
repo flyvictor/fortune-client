@@ -8,20 +8,21 @@ var crudFactory = require("../../lib/crud-factory"),
 
 module.exports = function(util){
   describe("crud", function(){
-    describe("with local fortune", function(){
+    describe("with fortune", function(){
       var crud;
-      var mixin, fortune = {
-        direct: {
-          get: function(){},
-          create: function(){},
-          destroy: function(){},
-          replace: function(){},
-          update: function(){}
-        }
-      };
+      var mixin,
+          fortune = {
+            direct: {
+              get: function(){},
+              create: function(){},
+              destroy: function(){},
+              replace: function(){},
+              update: function(){}
+            }
+          };
       
       beforeEach(function(){
-        crud = crudFactory(fortune, [
+        crud = crudFactory(fortune.direct, [
           {name: "resource", route: "resources"},
           {name: "singular-only", route: "singular-only"}
         ], ["get", "create", "replace", "update", "destroy"]);
