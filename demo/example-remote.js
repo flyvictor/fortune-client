@@ -77,6 +77,6 @@ function teardown(){
       });
     }));
   })).then(function(){
-    //process.exit();
+    process.exit();
   });
 }
