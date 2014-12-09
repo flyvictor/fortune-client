@@ -32,7 +32,7 @@ module.exports = function(util){
     });
 
     it("requests resource metadata", function(){
-      _.pluck(client.resources, "name").should.be.eql(resourceNames);
+      _.pluck(client.resources, "name").sort().should.be.eql(resourceNames.sort());
     });
 
 
@@ -266,7 +266,7 @@ module.exports = function(util){
     });
 
     it("requests resource metadata", function(){
-      _.pluck(client.resources, "name").should.be.eql(resourceNames);
+      _.pluck(client.resources, "name").sort().should.be.eql(resourceNames.sort());
     });
 
     it("allows getting a collection of resources", function(done){
