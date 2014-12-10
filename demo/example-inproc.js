@@ -21,6 +21,12 @@ when.all([
       createdUsers.users.length.should.equal(2);
       return client.getUsers({});
     }).then(function(foundUsers){
+      
+      console.log("client.getUsers found user",
+        foundUsers.users[0].id, foundUsers.users[0].email, foundUsers.users[0].name);
+      console.log("client.getUsers found user",
+        foundUsers.users[1].id, foundUsers.users[1].email, foundUsers.users[1].name);
+
       foundUsers.users.length.should.equal(2);
       return client.createAddresses([
         {street: "Penny lane", links: {inhabitants: foundUsers.users[0].id}}
@@ -29,6 +35,10 @@ when.all([
       createdAddresses.addresses.length.should.equal(1);
       return client.getUser(createdAddresses.addresses[0].links.inhabitants[0])
     }).then(function(foundUser){
+
+      console.log("client.getUser by inhabitant found user",
+        foundUser.users[0].id, foundUser.users[0].email, foundUser.users[0].name);
+
       foundUser.users.length.should.equal(1);
       should.exist(foundUser.users[0].links.address);
       return client.createBands([
@@ -40,8 +50,17 @@ when.all([
     }).then(function(usersAndAddress){
       usersAndAddress.users.length.should.equal(2);
       usersAndAddress.linked.addresses.length.should.equal(1);
+
+
+      console.log("client.getUsers with addresses found address",
+        usersAndAddress.linked.addresses[0].id, usersAndAddress.linked.addresses[0].street,
+        usersAndAddress.linked.addresses[0].links.inhabitants);
+      
       return client.get("users", {name: "Dilbert"})
     }).then(function(foundUsers){
+      console.log("client.get users Dilbert found user",
+        foundUsers.users[0].id, foundUsers.users[0].email, foundUsers.users[0].name);
+      
       foundUsers.users.length.should.equal(1);
       console.log("Done");
       teardown();
