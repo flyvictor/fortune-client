@@ -302,6 +302,15 @@ module.exports = function(util){
           done();
         });
       });
+      it("rejects a promise with main error if detail is absent", function(done) {
+        fortune.direct.get.returns(when.resolve({ error: "Something wrong happened" }));
+        crud.fancy.getResource(0,{opts:true})().then(function(){
+          done(new Error("Promise with error should be rejected"));
+        }).catch(function(error) {
+          error.message.should.eql("Something wrong happened");
+          done();
+        }).catch(done);
+      });
     });
   });
 };
