@@ -43,7 +43,7 @@ module.exports = function(util){
             query: {}
           }).should.be.true;
           done();
-        });
+        }).catch(done);
       });
 
       it("gets a collection of documents", function(done){
@@ -54,7 +54,7 @@ module.exports = function(util){
             params: {}
           }).should.be.true;
           done();
-        });
+        }).catch(done);
       });
 
       it("creates a document", function(done){
@@ -66,7 +66,7 @@ module.exports = function(util){
             params: {}
           }).should.be.true;
           done();
-        }).catch(function(err){ console.trace(err); });
+        }).catch(done);
       });
 
       it("destroys a document", function(done){
@@ -77,7 +77,7 @@ module.exports = function(util){
             query: {}
           }).should.be.true;
           done();
-        });
+        }).catch(done);
       });
 
       it("replaces a document", function(done){
@@ -89,7 +89,7 @@ module.exports = function(util){
             query: {}
           }).should.be.true;
           done();
-        });
+        }).catch(done);
       });
 
       it("updates a document", function(done){
@@ -101,7 +101,7 @@ module.exports = function(util){
             query: {}
           }).should.be.true;
           done();
-        });
+        }).catch(done);
       });
 
       it("passes auth credentials", function(done){
@@ -114,7 +114,7 @@ module.exports = function(util){
             }
           }).should.be.true;
           done();
-        });
+        }).catch(done);
       });
 
       it("merges collection query into the request query filters", function(){
@@ -138,7 +138,7 @@ module.exports = function(util){
               query: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("gets a collection of documents", function(done){
@@ -149,7 +149,7 @@ module.exports = function(util){
               params: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("creates a document", function(done){
@@ -161,7 +161,7 @@ module.exports = function(util){
               params: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("destroys a document", function(done){
@@ -172,7 +172,7 @@ module.exports = function(util){
               query: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("replaces a document", function(done){
@@ -184,7 +184,7 @@ module.exports = function(util){
               query: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("updates a document", function(done){
@@ -196,7 +196,7 @@ module.exports = function(util){
               query: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("merges collection query into the request query filters", function(){
@@ -232,7 +232,7 @@ module.exports = function(util){
               query: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("gets a collection of documents", function(done){
@@ -243,7 +243,7 @@ module.exports = function(util){
               params: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("creates a document", function(done){
@@ -255,7 +255,7 @@ module.exports = function(util){
               params: {}
             }).should.be.true;
             done();
-          }).catch(function(err){ console.trace(err); });
+          }).catch(done);
         });
 
         it("destroys a document", function(done){
@@ -266,7 +266,7 @@ module.exports = function(util){
               query: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("replaces a document", function(done){
@@ -278,7 +278,7 @@ module.exports = function(util){
               query: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
 
         it("updates a document", function(done){
@@ -290,8 +290,26 @@ module.exports = function(util){
               query: {}
             }).should.be.true;
             done();
-          });
+          }).catch(done);
         });
+      });
+      it("rejects a promise if error returned", function(done) {
+        fortune.direct.get.returns(when.resolve({ error: "Something wrong happened", detail: "MongoError: database not found" }));
+        crud.fancy.getResource(0,{opts:true})().then(function(){
+          done(new Error("Promise with error should be rejected"));
+        }).catch(function(error) {
+          error.message.should.eql("MongoError: database not found");
+          done();
+        });
+      });
+      it("rejects a promise with main error if detail is absent", function(done) {
+        fortune.direct.get.returns(when.resolve({ error: "Something wrong happened" }));
+        crud.fancy.getResource(0,{opts:true})().then(function(){
+          done(new Error("Promise with error should be rejected"));
+        }).catch(function(error) {
+          error.message.should.eql("Something wrong happened");
+          done();
+        }).catch(done);
       });
     });
   });
