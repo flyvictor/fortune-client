@@ -470,6 +470,24 @@ module.exports = function(util){
       });
     });
 
+    it("supports query in programmatic syntax", function(done){
+      client.getUsers({name: "Bob"}).then(function(data){
+        client.get("users", {name: "Bob"}).then(function(data2){
+          data2.should.eql(data);
+          done();
+        });
+      });
+    });
+
+    it("supports options in programmatic syntax", function(done){
+      client.getUsers({}, {limit: 1}).then(function(data){
+        client.get("users", {}, {limit: 1}).then(function(data2){
+          data2.should.eql(data);
+          done();
+        });
+      });
+    });
+
     util.requireSpecs(__dirname, ["compound-documents"]);
   });
 };
