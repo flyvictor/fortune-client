@@ -284,6 +284,24 @@ module.exports = function(util){
       });
     });
 
+    it("allows getting a related document based on a query", function(done){
+      client.updateUser(ids.users[0], [{
+        op: "add",
+        path: "/users/0/instruments/-",
+        value: ids.instruments[0]
+      }]).then(function(data){
+        data.users[0].links.instruments.length.should.equal(1);
+        data.users[0].links.instruments[0].should.equal(ids.instruments[0]);
+        client.getUsers({
+          instruments: {name: 'guitar'}
+        }).then(function(res){
+          res.users.length.should.equal(1);
+          res.users[0].id.should.equal(ids.users[0]);
+          done();
+        });
+      }).catch(function(err){ console.trace(err); });
+    });
+
     it("allows getting a single document", function(done){
       var id = ids.users[0];
 
@@ -466,6 +484,59 @@ module.exports = function(util){
             data2.should.be.eql(data);
             done();
           });
+        });
+      });
+    });
+
+    describe("denormalization", function(){
+      beforeEach(function(done){
+        client.updateUser(ids.users[0], [
+          {op: 'add', path: '/users/0/instruments', value: ids.instruments[0]},
+          {op: 'replace', path: '/users/0/address', value: ids.addresses[0]},
+          {op: 'replace', path: '/users/0/lover', value: ids.users[1]}
+        ]).then(function(){
+          done();
+        });
+      });
+      it('should denormalize one-to-one refs', function(done){
+        client.getUser(ids.users[0], {include: 'lover', denormalize: true}).then(function(res){
+          res.users[0].links.lover.should.be.an.Object;
+          res.users[0].links.lover.id.should.equal(ids.users[1]);
+          done();
+        });
+      });
+      it('should denormalize one-to-many refs', function(done){
+        client.getUser(ids.users[0], {include: 'address', denormalize: true}).then(function(res){
+          res.users[0].links.address.should.be.an.Object;
+          res.users[0].links.address.id.should.equal(ids.addresses[0]);
+          done();
+        })
+      });
+      it('should denormalize many-to-one refs', function(done){
+        client.getUser(ids.users[0], {include: 'instruments', denormalize: true}).then(function(res){
+          res.users[0].links.instruments.length.should.equal(1);
+          res.users[0].links.instruments[0].should.be.an.Object;
+          res.users[0].links.instruments[0].id.should.equal(ids.instruments[0]);
+          done();
+        });
+      });
+      it('should denormalize many-to-many refs');
+      it('should denormalize deeply linked documents', function(done){
+        client.getAddress(ids.addresses[0], {include: 'inhabitants,inhabitants.instruments', denormalize: true}).then(function(res){
+          res.addresses[0].links.inhabitants[0].should.be.an.Object;
+          res.addresses[0].links.inhabitants[0].links.instruments[0].should.be.an.Object;
+          done();
+        });
+      });
+      it('should denormalize external resources'); //does not fetch external resources properly atm
+      it('should not fail on circular references', function(done){
+        client.getUser(ids.users[0], {include: 'lover,lover.lover', denormalize: true}).then(function(res){
+          res.users[0].id.should.equal(ids.users[0]);
+          res.users[0].links.lover.should.be.an.Object;
+          res.users[0].links.lover.id.should.equal(ids.users[1]);
+          res.users[0].links.lover.links.lover.should.be.an.Object;
+          res.users[0].links.lover.links.lover.id.should.equal(ids.users[0]);
+          done();
         });
       });
     });
