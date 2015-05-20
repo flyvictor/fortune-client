@@ -7,7 +7,8 @@ module.exports = function(){
     name: String,
     email: String,
     address: {ref: "address"},
-    instruments: [{ref: "instrument"}]
+    instruments: [{ref: "instrument"}],
+    lover: {ref: 'user', type: String}
   }, {
     model: {
       pk: "email"

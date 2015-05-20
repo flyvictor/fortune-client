@@ -12,6 +12,7 @@ describe("UNIT TESTS", function(){
   });
 
   util.requireSpecs(__dirname,[
-    "crud-factory"
+    "crud-factory",
+    "denormalize"
   ]);
 });
