@@ -222,16 +222,38 @@ module.exports = function(util){
     });
 
 
-    it("supports alternative programmatic syntax", function(done){
-      client.getUsers().then(function(data){
-        client.get("users").then(function(data2){
-          data2.should.be.eql(data);
-        });
-      }).then(function(){
-        client.getBands().then(function(data){
-          client.get("bands").then(function(data2){
+    describe("alternative programmatic syntax", function(){
+      it("supports alternative programmatic syntax", function(done){
+        client.getUsers().then(function(data){
+          client.get("users").then(function(data2){
             data2.should.be.eql(data);
+          });
+        }).then(function(){
+          client.getBands().then(function(data){
+            client.get("bands").then(function(data2){
+              data2.should.be.eql(data);
+              done();
+            });
+          });
+        });
+      });
+      it("supports queries in programmatic syntax", function(done){
+        client.getUsers({name: "Bob"}).then(function(reg){
+          client.get("users", {name: "Bob"}).then(function(prog){
+            reg.should.eql(prog);
             done();
+          });
+        });
+      });
+      it("supports additional parameters", function(done){
+        client.updateUsers(ids.users[0],[
+          {op: 'add', path: '/users/0/links/instruments', value: ids.instruments[0]}
+        ]).then(function(){
+          client.getUsers({name: "Bob"}, {include: "instruments"}).then(function(reg){
+            client.get("users", {name: "Bob"}, {include: "instruments"}).then(function(prog){
+              reg.should.eql(prog);
+              done();
+            });
           });
         });
       });
