@@ -76,7 +76,7 @@ module.exports = function(util){
         name: "Phil",
         email: "phil@abc.com"
       };
-      
+
       client.createUsers([user1, user2]).then(function(data){
         data.users.length.should.be.equal(2);
         done();
@@ -95,9 +95,30 @@ module.exports = function(util){
       });
     });
 
+
+    it("allows querying with a fluent interface", function(done){
+      should.exist( client.user );
+      should.exist( client.user.get );
+
+      client.user.get({name: 'Alice'}).fields(['id', 'name']).execute()
+      .then( function( data ){
+        should.exist( data );
+        should.exist( data.users );
+        data.should.be.type( 'object' );
+        console.log( data );
+        data.users.should.be.length( 1 );
+        done()
+      })
+      .catch( function( err ){
+        console.log( err );
+        done()
+      });
+      //done();
+    });
+
     it("allows destroying a document", function(done){
       var count, id;
-      
+
       client.getUsers().then(function(data){
         count = data.users.length;
         count.should.be.above(0);
@@ -113,7 +134,7 @@ module.exports = function(util){
 
     it.skip("allows destroying a set of documents", function(done){
       var ids, count;
-      
+
       client.getUsers().then(function(data){
         count = data.users.length;
         ids = [data.users[0].id,data.users[1].id];
