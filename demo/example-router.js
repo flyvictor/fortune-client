@@ -37,16 +37,10 @@ when.all([
 				});
 			});
 
-			// console.log(`Registering GET /${resource.route}/:id`);
-			// app.get(`/${resource.route}/:id`, function(req, res){
-			// 	console.log(`GET /${resource.route}/${req.params.id}`);
-			// 	client.get(resource.route, req.params.id).then(values => res.send(values));
-			// });
-
 			console.log("Registering GET /" + resource.route + "/:id");
 			app.get('/' + resource.route + "/:id", function(req, res){
 				console.log('GET /' + resource.route + "/" + req.params.id);
-				client.get(resource.route, req.params.id).then(function(values){
+				client.get(resource.route, req.params.id, req.query).then(function(values){
 					res.send(values);
 				});
 			});
@@ -62,15 +56,23 @@ when.all([
 			console.log("Registering PATCH /" + resource.route + "/:id");
 			app.patch('/' + resource.route + "/:id", function(req, res){
 				console.log('PATCH /' + resource.route + "/" + req.params.id, req.body);
-				client.update(resource.route, req.params.id, req.body).then(function(values){
+				// client.replace seems to be doing what is expected of a PATCH.
+				// intuitively, I would call client.update for a PATCH and client.replace for a PUT, 
+				// but fortune-client seems to work differently.
+				// see http://restful-api-design.readthedocs.org/en/latest/methods.html#patch-vs-put
+				// and http://tools.ietf.org/html/rfc5789
+				// On another topic, executing a PATCH with new links.instruments effectively overwrites the entire links.instruments object,
+				// even though it leaves the links.addresses unaffected. 
+				client.replace(resource.route, req.params.id, req.body).then(function(values){
 					res.send(values);
 				});
 			});
 
+			// I can't seem to get PUT/client.update to work :(
 			console.log("Registering PUT /" + resource.route + "/:id");
 			app.put('/' + resource.route + "/:id", function(req, res){
 				console.log('PUT /' + resource.route + "/" + req.params.id, req.body);
-				client.replace(resource.route, req.params.id, req.body).then(function(values){
+				client.update(resource.route, req.params.id, req.body).then(function(values){
 					res.send(values);
 				});
 			});
