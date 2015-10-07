@@ -8,6 +8,7 @@ module.exports = function(){
     members: [{ref: "user", external: "true", type: String}],
     genres: [{ref: "genre"}]
   }).resource("genre", {
-    name: String
+    name: String,
+    instruments: [{ref: 'instrument', external: true}]
   });
 };

@@ -8,7 +8,8 @@ module.exports = function(){
     email: String,
     address: {ref: "address"},
     instruments: [{ref: "instrument"}],
-    lover: {ref: 'user', type: String}
+    lover: {ref: 'user', type: String},
+    band: {ref: 'band', external: true}
   }, {
     model: {
       pk: "email"
@@ -19,7 +20,9 @@ module.exports = function(){
     postcode: String,
     inhabitants: [{ref: "user", type: String}]
   }).resource("instrument",{
-    name: String
+    name: String,
+    genre: {ref: 'genre', external: true},
+    owner: {ref: 'user', type: String}
   }).resource("na-na-na-na",{
     batman: String
   });

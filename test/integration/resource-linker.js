@@ -81,11 +81,33 @@ var stubs = function () {
     }
   };
 
+  var denormalizedBodyWithExternals = {
+    people: [{
+      email: "dilbert@mailbert.com",
+      links: {
+        aircraft: [aircraftResource],
+        employer: "12345",
+        quotes: [quoteResource.quotes]
+      }
+    }],
+    links: {
+      "people.quotes": {type: "quotes"},
+      "people.aircraft": {type: "aircraft"},
+      "people.employer": {type: "operators"}
+    },
+    linked: {
+      quotes: quoteResource.quotes,
+      aircraft: "external",
+      operators: "external"
+    }
+  };
+
   return {
     quoteResource : quoteResource,
     aircraftResource : aircraftResource,
     operatorResource : operatorResource,
-    bodyWithExternals: bodyWithExternals
+    bodyWithExternals: bodyWithExternals,
+    denormalizedBodyWithExternals: denormalizedBodyWithExternals
   };
 };
 
@@ -190,5 +212,20 @@ describe("fortune resource linker", function(){
         done();
       });
     }).should.not.throw();
+  });
+
+  it.skip("should correctly handle linking when response is denormalized", function(done){
+    var includes = ["quotes", "aircraft"];
+    linker.fetchExternals({query: {include: 'quotes,aircraft'}}, stubs().denormalizedBodyWithExternals).then(function(data){
+      router.actions.getAircraft.callCount.should.equal(1);
+      var aircraft = router.actions.getAircraft.getCall(0);
+      aircraft.args[0].should.eql(["OE-GGP"]);
+      aircraft.args[1].should.eql({include: "images", parentRequest: initialRequest});
+      router.actions.getOperators.callCount.should.equal(1);
+      var operators = router.actions.getOperators.getCall(0);
+      operators.args[0].should.eql(["12345"]);
+      operators.args[1].should.eql({include: "", parentRequest: initialRequest});
+      done();
+    }).catch(done);
   });
 });
