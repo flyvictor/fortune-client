@@ -30,6 +30,25 @@ module.exports = function(util) {
         };
         denormalize._rebaseLinks(links, 'addresses', 'inhabitants').should.eql({});
       });
+
+      it('should not fail', function(){
+        var links = {
+          'charges.card': { type: 'cards' },
+          'charges.quote': { type: 'quotes' },
+          'charges.user': { type: 'users' },
+          'charges.paymentType': { type: 'payment-types' },
+          'charges.accountCredit': { type: 'account-credits' },
+          'charges.quote.quoteLegs': { type: 'quote-legs' },
+          'charges.quote.quoteLegs.arrAirport': { type: 'airports' },
+          'charges.quote.quoteLegs.deptAirport': { type: 'airports' }
+        };
+        denormalize._rebaseLinks(links, 'charges', 'card').should.eql({});
+        denormalize._rebaseLinks(links, 'charges', 'quote').should.eql({
+          'quotes.quoteLegs': { type: 'quote-legs' },
+          'quotes.quoteLegs.arrAirport': {type: 'airports'},
+          'quotes.quoteLegs.deptAirport': {type: 'airports'}
+        });
+      });
     });
   });
 };

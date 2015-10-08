@@ -71,6 +71,17 @@ module.exports = function(util){
           done();
         }).catch(done);
       });
+      it('should properly handle -s in  resource names', function(done){
+        client.updateUser(ids.users[0], [
+          {op: 'replace', path: '/users/0/links/nanananas', value: ids['na-na-na-nas']}
+        ]).then(function(){
+          client.getNaNaNaNas({}, {include: 'users,users.nanananas,users.nanananas.users', denormalize: true}).then(function(res){
+            res['na-na-na-nas'][0].links.users[0].links.nanananas[0].id.should.equal(ids['na-na-na-nas'][0]);
+            res['na-na-na-nas'][0].links.users[0].links.nanananas[0].links.users[0].id.should.equal(ids.users[0]);
+            done();
+          });
+        });
+      });
     });
     describe('deep links', function(){
       beforeEach(function(done){

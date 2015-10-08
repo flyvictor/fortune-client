@@ -9,7 +9,8 @@ module.exports = function(){
     address: {ref: "address"},
     instruments: [{ref: "instrument"}],
     lover: {ref: 'user', type: String},
-    band: {ref: 'band', external: true}
+    band: {ref: 'band', external: true},
+    nanananas: [{ref: 'na-na-na-na', inverse: 'users'}]
   }, {
     model: {
       pk: "email"
@@ -24,6 +25,7 @@ module.exports = function(){
     genre: {ref: 'genre', external: true},
     owner: {ref: 'user', type: String}
   }).resource("na-na-na-na",{
-    batman: String
+    batman: String,
+    users: [{ref: 'user', inverse: 'nanananas', type: String}]
   });
 };
