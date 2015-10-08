@@ -31,7 +31,7 @@ module.exports = function(util) {
         denormalize._rebaseLinks(links, 'addresses', 'inhabitants').should.eql({});
       });
 
-      it('should not fail', function(){
+      it('yield correct sub-links', function(){
         var links = {
           'charges.card': { type: 'cards' },
           'charges.quote': { type: 'quotes' },
