@@ -7,7 +7,7 @@ var deepFilter = require('../../lib/deep-filter');
 
 module.exports = function() {
   /* jshint undef: false */
-  describe('Deep filter', function() {
+  describe("Deep filter", function() {
     var config = {};
     var fortuneClient = {};
 
@@ -63,8 +63,7 @@ module.exports = function() {
     });
 
     it("should flatten filters by external resource fields", function(done) {
-      // request: "/users?filter[posts][user]=Bob"
-      setFilter({ posts: { user: "Bob" }});
+      setFilter({ posts: { user: "Bob" }}); // /users?filter[posts][user]=Bob
 
       var reqParams = {
         fields: 'id',
@@ -79,12 +78,7 @@ module.exports = function() {
         ]
       }));
 
-      var expected = {
-        posts: {
-          $in: ["firstid", "secondid"]
-        }
-      };
-
+      var expected = { posts: { $in: ["firstid", "secondid"]}};
       deepFilter.modifyFilter(config, fortuneClient)
         .then(function() {
           fortuneClient.get.calledWith("posts", reqParams).should.be.true;
@@ -95,24 +89,20 @@ module.exports = function() {
     });
 
     it("should not interfere if initial request filters reference by ids", function(done) {
-      // "/users?filter[posts][in]=postone,posttwo"
+      setFilter({ posts: { in: "postone,posttwo" }}); // /users?filter[posts][in]=postone,posttwo
 
-      setFilter({ posts: { in: "postone,posttwo" }});
-      var sourceFilter = getFilter();
-
+      var oldFilter = getFilter();
       deepFilter.modifyFilter(config, fortuneClient)
         .then(function() {
           fortuneClient.get.called.should.be.false;
           var newFilter = getFilter();
-          newFilter.should.eql(sourceFilter);
+          newFilter.should.eql(oldFilter);
           done();
         }).catch(done);
     });
 
     it("should be able to work with regex query", function(done) {
-      // /users?filter[posts][title][regex]=title
-
-      setFilter({ posts: { title: { regex: "title" }}});
+      setFilter({ posts: { title: { regex: "title" }}}); // /users?filter[posts][title][regex]=title
 
       var reqParams = {
         fields: 'id',
