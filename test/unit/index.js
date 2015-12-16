@@ -13,6 +13,7 @@ describe("UNIT TESTS", function(){
 
   util.requireSpecs(__dirname,[
     "crud-factory",
-    "denormalize"
+    "denormalize",
+    "deep-filter"
   ]);
 });
