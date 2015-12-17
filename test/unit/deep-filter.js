@@ -33,8 +33,8 @@ module.exports = function() {
             name: "post",
             route: "posts",
             schema: {
-              user: String,
-              title: String
+              title: String,
+              amount: Number
             }
           }
         },
@@ -50,7 +50,7 @@ module.exports = function() {
     }
 
     it("should correctly pass simple filters", function(done) {
-      setFilter({ name: "Bob" });
+      setFilter({ title: "Education" });
       var sourceFilter = getFilter();
 
       deepFilter.modifyFilter(config, fortuneClient)
@@ -63,11 +63,11 @@ module.exports = function() {
     });
 
     it("should flatten filters by external resource fields", function(done) {
-      setFilter({ posts: { user: "Bob" }}); // /users?filter[posts][user]=Bob
+      setFilter({ posts: { amount: { $gt: 5 }}}); // /users?filter[posts][amount][$gt]=5
 
       var reqParams = {
         fields: 'id',
-        filter: { user: 'Bob' },
+        filter: { amount: { $gt: 5 }},
         limit: 0,
         userAuthToken: undefined
       };
