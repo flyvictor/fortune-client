@@ -19,4 +19,5 @@ describe("INTEGRATION TESTS", function(){
 
   util.requireSpecs(__dirname, ["fortune-client"]);
   util.requireSpecs(__dirname, ["linking"]);
+  util.requireSpecs(__dirname, ["deep-filter"]);
 });

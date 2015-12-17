@@ -17,8 +17,8 @@ module.exports = function() {
         query: { filter: {} }
       };
       fortuneClient = {
-        resources: {
-          user: {
+        resources: [
+          {
             name: "user",
             route: "users",
             schema: {
@@ -29,7 +29,7 @@ module.exports = function() {
               name: String
             }
           },
-          post: {
+          {
             name: "post",
             route: "posts",
             schema: {
@@ -37,7 +37,7 @@ module.exports = function() {
               amount: Number
             }
           }
-        },
+        ],
         get: sinon.stub().returns(when.resolve({}))
       };
     });
