@@ -12,7 +12,7 @@ module.exports = function() {
     var fortuneClient = {};
 
     beforeEach(function() {
-      config.resource = "user";
+      config.resource = "users";
       config.request = {
         query: { filter: {} }
       };
@@ -65,13 +65,15 @@ module.exports = function() {
     it("should flatten filters by external resource fields", function(done) {
       setFilter({ posts: { amount: { $gt: 5 }}}); // /users?filter[posts][amount][$gt]=5
 
+      var reqFilter = {
+        amount: { $gt: 5 }
+      };
       var reqParams = {
         fields: 'id',
-        filter: { amount: { $gt: 5 }},
         limit: 0,
         userAuthToken: undefined
       };
-      fortuneClient.get.withArgs("posts", reqParams).returns(when.resolve({
+      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(when.resolve({
         posts: [
           { id: "firstid" },
           { id: "secondid" }
@@ -81,7 +83,14 @@ module.exports = function() {
       var expected = { posts: { $in: ["firstid", "secondid"]}};
       deepFilter.modifyFilter(config, fortuneClient)
         .then(function() {
-          fortuneClient.get.calledWith("posts", reqParams).should.be.true;
+          var args = fortuneClient.get.getCall(0).args;
+          args[0].should.equal('posts');
+          args[1].should.eql({amount: {$gt: 5}});
+          args[2].should.eql({
+            fields: "id",
+            limit: 0,
+            userAuthToken: undefined
+          });
           var newFilter = getFilter();
           newFilter.should.eql(expected);
           done();
@@ -104,20 +113,65 @@ module.exports = function() {
     it("should be able to work with regex query", function(done) {
       setFilter({ posts: { title: { regex: "title" }}}); // /users?filter[posts][title][regex]=title
 
+      var reqFilter = {
+        title: { regex: "title" }
+      };
       var reqParams = {
         fields: 'id',
-        filter: { title: { regex: "title" }},
         limit: 0,
         userAuthToken: undefined
       };
-      fortuneClient.get.withArgs("posts", reqParams).returns(when.resolve({
+      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(when.resolve({
         posts: [{ id: "postone" }]
       }));
 
       var expected = { posts: { $in: ["postone"] }};
       deepFilter.modifyFilter(config, fortuneClient)
         .then(function() {
-          fortuneClient.get.calledWith("posts", reqParams).should.be.true;
+          var args = fortuneClient.get.getCall(0).args;
+          args[0].should.equal('posts');
+          args[1].should.eql({title: {regex: 'title'}});
+          args[2].should.eql({
+            fields: "id",
+            limit: 0,
+            userAuthToken: undefined
+          });
+          var newFilter = getFilter();
+          newFilter.should.eql(expected);
+          done();
+        }).catch(done);
+    });
+
+    it('should rewrite resource name for provided virtual resources', function(done){
+      setFilter({ posts: { title: { regex: "title" }}}); // /users?filter[posts][title][regex]=title
+
+      var reqFilter = {
+        title: { regex: "title" }
+      };
+      var reqParams = {
+        fields: 'id',
+        limit: 0,
+        userAuthToken: undefined
+      };
+      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(when.resolve({
+        posts: [{ id: "postone" }]
+      }));
+
+      var expected = { posts: { $in: ["postone"] }};
+      deepFilter.modifyFilter(config, fortuneClient, {
+          virtualResources: {
+            victual: 'users'
+          }
+        })
+        .then(function() {
+          var args = fortuneClient.get.getCall(0).args;
+          args[0].should.equal('posts');
+          args[1].should.eql({title: {regex: 'title'}});
+          args[2].should.eql({
+            fields: "id",
+            limit: 0,
+            userAuthToken: undefined
+          });
           var newFilter = getFilter();
           newFilter.should.eql(expected);
           done();
