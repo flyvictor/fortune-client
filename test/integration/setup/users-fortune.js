@@ -10,6 +10,7 @@ module.exports = function(){
     instruments: [{ref: "instrument"}],
     lover: {ref: 'user', type: String},
     band: {ref: 'band', external: true},
+    bababand: {ref: 'band', external: true},
     nanananas: [{ref: 'na-na-na-na', inverse: 'users'}]
   }, {
     model: {

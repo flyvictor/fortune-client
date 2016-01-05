@@ -257,6 +257,17 @@ module.exports = function(util){
           });
         });
       });
+      it("should not duplicate included resources from different paths", function(done){
+        client.updateUsers(ids.users[0], [
+          {op: 'replace', path: '/users/0/links/band', value: [ids.bands[0]]},
+          {op: 'replace', path: '/users/0/links/bababand', value: [ids.bands[0]]}
+        ]).then(function(){
+          client.getUsers(ids.users[0], {include: "band,bababand"}).then(function(res){
+            res.linked.bands.length.should.equal(1);
+            done();
+          });
+        });
+      });
     });
 
     util.requireSpecs(__dirname, ["compound-documents"]);
