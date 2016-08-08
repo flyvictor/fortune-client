@@ -50,5 +50,51 @@ module.exports = function(util) {
         });
       });
     });
+    describe('denormalize layer', function(){
+      var body, config, user;
+      beforeEach( function(){
+        user = { id: "abcdef", lastName: "Jones", title: "Mr" };
+        body = {
+          events: [{ links: { user: 'abcdef' } }],
+          links: { 'events.user': { type: 'users' } },
+          linked: { users: [ user ] }
+        };
+        config = {
+          request: {},
+          resource: 'events'
+        };
+      });
+      it('should not denormalize body if denormalize disabled', function(){
+        denormalize.denormalize( config, { body: body } );
+        body.events[ 0 ].links.user.should.be.eql( user.id );
+      });
+      it('should denormalize body if denormalize enabled', function(){
+        config.request.denormalize = true;
+        denormalize.denormalize( config, { body: body } );
+        body.events[ 0 ].links.user.should.be.eql( user );
+      });
+      /*
+       * There was a bug where if a linked resource was requsted as a child of a
+       * resource of the same type, it wasn't correctly handled.
+       * eg: include: 'user,user.accountOwner', both user and accountOwner are
+       * users.
+       */
+      it('should denormalize resources linked to same type as self', function(){
+        var accountOwner = {
+          id: 'xyz123',
+          title: 'Miss',
+          lastName: 'Victor',
+          ownedAccounts: [ 'abcdef' ],
+        };
+        config.request.denormalize = true;
+        body.links[ 'events.user.accountOwner' ] = { type: 'users' };
+        user.links = { accountOwner: "xyz123" };
+        body.linked.users.push( accountOwner );
+        denormalize.denormalize( config, { body: body } );
+        body.events[ 0 ].links.user.links.accountOwner.should.be.eql( accountOwner );
+      });
+
+    });
+
   });
 };
