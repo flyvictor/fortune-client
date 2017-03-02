@@ -15,6 +15,7 @@
     "node": ">=0.10"
   },
   "dependencies": {
+    "cryptojs": "2.5.3",
     "lodash": "~2.4.1",
     "superagent": "3.5.0",
     "when": "~3.2.3"
