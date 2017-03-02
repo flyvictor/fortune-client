@@ -1,10 +1,10 @@
 var remoteAdapter = require('../../lib/remote-adapter');
-var request = require('request');
+var request = require('superagent');
 var sinon = require('sinon');
 var _ = require('lodash');
 
 module.exports = function() {
-  xdescribe('remote-adapter', function() {
+  describe.skip('remote-adapter', function() {
     var adapter, host, expectedParams;
 
     beforeEach(function() {
