@@ -16,8 +16,7 @@
   },
   "dependencies": {
     "lodash": "~2.4.1",
-    "request": "^2.50.0",
-    "requesto": "~0.0.1",
+    "superagent": "3.5.0",
     "when": "~3.2.3"
   },
   "devDependencies": {
