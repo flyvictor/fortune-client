@@ -4,7 +4,7 @@ var sinon = require('sinon');
 var _ = require('lodash');
 
 module.exports = function() {
-  describe('remote-adapter', function() {
+  xdescribe('remote-adapter', function() {
     var adapter, host, expectedParams;
 
     beforeEach(function() {
@@ -140,7 +140,7 @@ module.exports = function() {
       });
     });
   });
-  describe('remote-adapter with secured host', function() {
+  xdescribe('remote-adapter with secured host', function() {
     var adapter, host, expectedParams;
 
     beforeEach(function() {

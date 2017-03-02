@@ -8,7 +8,7 @@ describe('oauth middleware', function(){
   beforeEach(function(){
     sinon.stub(factory, 'getNonce');
     sinon.stub(factory, 'getTimestamp');
-    fn = factory.Middleware('key', 'secret');
+    fn = factory.Middleware({key: 'key', secret: 'secret'});
   });
   afterEach(function(){
     factory.getNonce.restore();

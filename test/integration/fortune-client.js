@@ -302,7 +302,7 @@ module.exports = function(util){
       _.pluck(client.resources, "name").sort().should.be.eql(resourceNames.sort());
     });
 
-    it.only("allows getting a collection of resources", function(done){
+    it("allows getting a collection of resources", function(done){
       client.getUsers().then(function(data){
         data.users.length.should.be.equal(setup.apps.users.resources.users.length);
         done();
