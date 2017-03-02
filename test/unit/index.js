@@ -14,6 +14,7 @@ describe("UNIT TESTS", function(){
   util.requireSpecs(__dirname,[
     "crud-factory",
     "denormalize",
-    "deep-filter"
+    "deep-filter",
+    "remote-adapter"
   ]);
 });

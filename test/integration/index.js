@@ -12,7 +12,7 @@ describe("INTEGRATION TESTS", function(){
   beforeEach(function(done){
     setup.populate().then(done);
   });
-  
+
   afterEach(function(done){
     setup.wipeCollections().then(done);
   });
