@@ -559,7 +559,7 @@ module.exports = function(util){
           res.addresses[0].links.inhabitants[0].should.be.an.Object;
           res.addresses[0].links.inhabitants[0].links.instruments[0].should.be.an.Object;
           done();
-        });
+        }).catch(done);
       });
       it('should denormalize external resources'); //does not fetch external resources properly atm
       it('should not fail on circular references', function(done){
@@ -570,7 +570,7 @@ module.exports = function(util){
           res.users[0].links.lover.links.lover.should.be.an.Object;
           res.users[0].links.lover.links.lover.id.should.equal(ids.users[0]);
           done();
-        });
+        }).catch(done);
       });
     });
 
