@@ -51,11 +51,4 @@ describe('normalize-filter', function(){
     req.qs['filter[dot.ted]'].should.equal('e');
     req.qs['filter[nested][dot.ted]'].should.equal('f');
   });
-  it('should correctly flatten empty filter object', function(){
-    var original = {};
-    req.qs.filter = original;
-    fn(req).should.equal(req);
-    req.qs.filter.should.eql({});
-    req.qs.filter.should.equal(original);
-  });
 });
