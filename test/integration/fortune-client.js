@@ -111,6 +111,27 @@ module.exports = function(util){
       });
     });
 
+    it("should throw if singular destroy is called with null-like id", function(){
+      try {
+        client.destroyUser('');
+        throw new Error('Expected to throw');
+      }catch(e){
+        e.message.should.equal('Operating on a collection with a singularised action. Use the pluralised form.');
+      }
+      try {
+        client.destroyUser();
+        throw new Error('Expected to throw');
+      }catch(e){
+        e.message.should.equal('Operating on a collection with a singularised action. Use the pluralised form.');
+      }
+      try {
+        client.destroyUser(null);
+        throw new Error('Expected to throw');
+      }catch(e){
+        e.message.should.equal('Operating on a collection with a singularised action. Use the pluralised form.');
+      }
+    });
+
     it.skip("allows destroying a set of documents", function(done){
       var ids, count;
       
