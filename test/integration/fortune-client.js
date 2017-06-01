@@ -76,7 +76,7 @@ module.exports = function(util){
         name: "Phil",
         email: "phil@abc.com"
       };
-      
+
       client.createUsers([user1, user2]).then(function(data){
         data.users.length.should.be.equal(2);
         done();
@@ -95,9 +95,86 @@ module.exports = function(util){
       });
     });
 
+//~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+//~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+    it("supports a fluent interface", function(done){
+
+      client.users.get().execute()
+      .then( function( data ){
+        should.exist( data );
+        should.exist( data.users );
+        data.should.be.type( 'object' );
+        data.users.should.be.length( 3 );
+        done()
+      })
+      .catch( function( err ){
+        should.not.exist( err );
+        console.log( err.stack || err );
+        done()
+      });
+    });
+
+    it("allows querying in a fluent style", function(done){
+
+      client.users.get( { name: 'Alice' } ).execute()
+      .then( function( data ){
+        should.exist( data );
+        should.exist( data.users );
+        data.should.be.type( 'object' );
+        data.users.should.be.length( 1 );
+        done()
+      })
+      .catch( function( err ){
+        should.not.exist( err );
+        console.log( err.stack || err );
+        done()
+      });
+    });
+
+
+    it("allows chaining query modifiers in a fluent style", function(done){
+
+      var fields = [ 'id', 'name', 'email' ];
+      var limit = 2;
+
+      client.users
+      .get( {  } )
+      .fields( fields )
+      .sort( { name : 1 } )
+      .limit( limit )
+      .execute()
+      .then( function( data ){
+        should.exist( data );
+        should.exist( data.users );
+        data.should.be.type( 'object' );
+
+        // check limit
+        data.users.length.should.be.below( limit + 1 );
+
+        var usersSorted = _.sortBy( data.users, 'name' );
+        _.each( data.users, function( user, i ){
+
+          // check order
+          usersSorted[ i ].id.should.be.equal( user.id );
+
+          // check fields
+           _.isEqual( Object.keys( user ), fields ).should.be.true;
+
+        });
+
+        done()
+      })
+      .catch( function( err ){
+        console.log( err.stack || err );
+        done()
+      });
+    });
+//~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+//~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*~*
+
     it("allows destroying a document", function(done){
       var count, id;
-      
+
       client.getUsers().then(function(data){
         count = data.users.length;
         count.should.be.above(0);
@@ -134,7 +211,7 @@ module.exports = function(util){
 
     it.skip("allows destroying a set of documents", function(done){
       var ids, count;
-      
+
       client.getUsers().then(function(data){
         count = data.users.length;
         ids = [data.users[0].id,data.users[1].id];
