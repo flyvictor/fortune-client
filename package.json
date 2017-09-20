@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "lodash": "~2.4.1",
-    "request": "^2.50.0",
+    "request": "2.81.0",
     "requesto": "~0.0.1",
     "when": "~3.2.3"
   },
