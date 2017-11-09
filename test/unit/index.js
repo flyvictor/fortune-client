@@ -15,6 +15,7 @@ describe("UNIT TESTS", function(){
     "crud-factory",
     "denormalize",
     "deep-filter",
-    "remote-adapter"
+    "remote-adapter", 
+    "actions-factory"
   ]);
 });

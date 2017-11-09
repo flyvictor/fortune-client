@@ -15,6 +15,27 @@ module.exports = function(){
   }, {
     model: {
       pk: "email"
+    }, 
+    actions: {
+      "first-action": {
+        name: 'first-action',
+        method: 'POST',
+        init: function(){
+          return function(req, res){
+            console.log("users --> firstAction");
+          };
+        }
+      }, 
+      "second-action": {
+        name: 'second-action',
+        method: 'POST',
+        init: function(){
+          return function(req, res){
+            console.log("users --> secondAction");
+          };
+        }
+      }
+      
     }
   }).resource("address",{
     houseNumber: Number,

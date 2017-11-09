@@ -10,11 +10,13 @@ module.exports = function() {
     beforeEach(function() {
       host = 'https://some-url.com';
       adapter = remoteAdapter(host);
+
       sinon.stub(request, 'get').yields(null, { body: { users: [{ id: 'userId' }]}});
       sinon.stub(request, 'post').yields(null, { body: { users: [{ id: 'newId' }]}});
       sinon.stub(request, 'put').yields(null, { body: { users: [{ id: 'replacedId' }]}});
       sinon.stub(request, 'patch').yields(null, { body: { users: [{ id: 'userId', firstName: 'Tom' }]}});
       sinon.stub(request, 'delete').yields(null, { body: { users: []}});
+      
     });
     afterEach(function() {
       _.each(['get', 'post', 'put', 'patch', 'delete'], function(method) {
@@ -139,7 +141,66 @@ module.exports = function() {
         });
       });
     });
+
+    it('should be fail if params object doesn\'t contain key', function(done) {
+      var expectedParams = {
+        json: true,
+        uri: 'https://some-url.com/users/userId',
+        body: [
+          {op: 'replace', path: '/users/0/firstName', value: 'Tom'}
+        ]
+      };
+      return adapter.callAction(
+        'users',
+        'POST',
+        {
+          params: { id: 'userId' },
+          body: [{ test:'test' }]
+        }
+      ).then(function(res) {
+        done(Error("callAction is not crash, but key is undefined"));
+      }).catch(function(error) { done(); });
+    });
+    it('should be fail if params object doesn\'t contain id', function(done) {
+      var expectedParams = {
+        json: true,
+        uri: 'https://some-url.com/users/userId',
+        body: [
+          {op: 'replace', path: '/users/0/firstName', value: 'Tom'}
+        ]
+      };
+      return adapter.callAction(
+        'users',
+        'POST',
+        {
+          params: { key: 'delete-data' },
+          body: [{ test:'test' }]
+        }
+      ).then(function(res) {
+        done(Error("callAction is not crash, but id is undefined"));
+      }).catch(function(error) { done(); });
+
+    });
+
+    it('should send callAction request with proper parameters', function() {
+      expectedParams = {
+        json: true,
+        uri: 'https://some-url.com/users',
+        body: { users: [{ id: 'userId' }]},
+        params: { id: 'userId', key: "key" },
+        method: 'GET'
+      };
+      return adapter.callAction('users', 'GET', { 
+        body: { id: 'userId' }, 
+        params: { id: 'userId', key: "key" }
+      }).then(function(res) {
+        request.get.should.be.calledOnce;
+      });
+    });
   });
+
+
+
   describe('remote-adapter with secured host', function() {
     var adapter, host, expectedParams;
 
