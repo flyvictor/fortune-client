@@ -93,6 +93,15 @@ module.exports = function(util) {
         denormalize.denormalize( config, { body: body } );
         body.events[ 0 ].links.user.links.accountOwner.should.be.eql( accountOwner );
       });
+      
+      it('should cut circular links after denormalize', function(){
+        config.request.denormalize = true;
+	body.events[0].id = "event1";
+	user.links = { event: "event1" };
+	body.links[ 'events.user.event' ] = { type: 'events' };
+        denormalize.denormalize( config, { body: body } );
+	body.events[ 0 ].links.user.links.event.should.be.eql( "event1" );
+      });
 
     });
 
