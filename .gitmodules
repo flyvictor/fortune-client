@@ -1,3 +1,0 @@
-[submodule "demo/fortune"]
-	path = demo/fortune
-	url = git@github.com:flyvictor/fortune.git
