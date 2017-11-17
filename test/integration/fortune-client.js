@@ -1,6 +1,7 @@
 var setup = require("./setup"),
     should = require("should"),
     fortuneClient = require("../../lib/fortune-client"),
+    assert = require("assert"),    
     _ = require("lodash");
 
 
@@ -544,14 +545,24 @@ module.exports = function(util){
 
     describe("denormalization", function(){
       beforeEach(function(done){
-        client.updateUser(ids.users[0], [
-          {op: 'add', path: '/users/0/instruments', value: ids.instruments[0]},
-          {op: 'replace', path: '/users/0/address', value: ids.addresses[0]},
-          {op: 'replace', path: '/users/0/lover', value: ids.users[1]}
-        ]).then(function(){
-          done();
-        });
+         client.updateUser(ids.users[0], [
+           {op: 'add', path: '/users/0/instruments', value: ids.instruments[0]},
+            {op: 'replace', path: '/users/0/address', value: ids.addresses[0]},
+            {op: 'replace', path: '/users/0/lover', value: ids.users[1]}
+          ]).then(function(){
+ 	  return client.updateUser(ids.users[1], [
+ 	    {op: 'replace', path: '/users/0/lover', value: ids.users[0]}
+ 	  ]);
+ 	}).then(function(){
+ 	  return client.updateAddress(ids.addresses[0], [
+ 	    {op: 'add', path: '/addresses/0/inhabitants', value: ids.users[0]}
+ 	  ]);
+ 	})
+ 	.then(function(){
+            done();
+         });
       });
+      
       it('should denormalize one-to-one refs', function(done){
         client.getUser(ids.users[0], {include: 'lover', denormalize: true}).then(function(res){
           res.users[0].links.lover.should.be.an.Object;

@@ -96,6 +96,7 @@ module.exports = function(util) {
       
       it('should cut circular links after denormalize', function(){
         config.request.denormalize = true;
+	config.request.denormalizeCheckCircLinks = true;
 	body.events[0].id = "event1";
 	user.links = { event: "event1" };
 	body.links[ 'events.user.event' ] = { type: 'events' };
