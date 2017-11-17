@@ -1,7 +1,7 @@
 var setup = require("./setup"),
     should = require("should"),
     fortuneClient = require("../../lib/fortune-client"),
-    assert = require("assert"),  
+    assert = require("assert"),    
     _ = require("lodash");
 
 
@@ -545,23 +545,24 @@ module.exports = function(util){
 
     describe("denormalization", function(){
       beforeEach(function(done){
-        client.updateUser(ids.users[0], [
-          {op: 'add', path: '/users/0/instruments', value: ids.instruments[0]},
-          {op: 'replace', path: '/users/0/address', value: ids.addresses[0]},
-          {op: 'replace', path: '/users/0/lover', value: ids.users[1]}
-        ]).then(function(){
-	  return client.updateUser(ids.users[1], [
-	    {op: 'replace', path: '/users/0/lover', value: ids.users[0]}
-	  ]);
-	}).then(function(){
-	  return client.updateAddress(ids.addresses[0], [
-	    {op: 'add', path: '/addresses/0/inhabitants', value: ids.users[1]}
-	  ]);
-	})
-	.then(function(){
-          done();
-        })
+         client.updateUser(ids.users[0], [
+           {op: 'add', path: '/users/0/instruments', value: ids.instruments[0]},
+            {op: 'replace', path: '/users/0/address', value: ids.addresses[0]},
+            {op: 'replace', path: '/users/0/lover', value: ids.users[1]}
+          ]).then(function(){
+ 	  return client.updateUser(ids.users[1], [
+ 	    {op: 'replace', path: '/users/0/lover', value: ids.users[0]}
+ 	  ]);
+ 	}).then(function(){
+ 	  return client.updateAddress(ids.addresses[0], [
+ 	    {op: 'add', path: '/addresses/0/inhabitants', value: ids.users[0]}
+ 	  ]);
+ 	})
+ 	.then(function(){
+            done();
+         });
       });
+      
       it('should denormalize one-to-one refs', function(done){
         client.getUser(ids.users[0], {include: 'lover', denormalize: true}).then(function(res){
           res.users[0].links.lover.should.be.an.Object;
@@ -586,12 +587,23 @@ module.exports = function(util){
       });
       it('should denormalize many-to-many refs');
       it('should denormalize deeply linked documents', function(done){
-        client.getAddress(ids.addresses[0], {include: 'inhabitants', denormalize: false}).then(function(res){
-	  assert(res.addresses[0].links.inhabitants.length == 1);
+        client.getAddress(ids.addresses[0], {include: 'inhabitants,inhabitants.instruments', denormalize: true}).then(function(res){
+          res.addresses[0].links.inhabitants[0].should.be.an.Object;
+          res.addresses[0].links.inhabitants[0].links.instruments[0].should.be.an.Object;
           done();
         });
       });
-     
+      it('should denormalize external resources'); //does not fetch external resources properly atm
+      it('should not fail on circular references', function(done){
+        client.getUser(ids.users[0], {include: 'lover,lover.lover', denormalize: true}).then(function(res){
+          res.users[0].id.should.equal(ids.users[0]);
+          res.users[0].links.lover.should.be.an.Object;
+          res.users[0].links.lover.id.should.equal(ids.users[1]);
+          res.users[0].links.lover.links.lover.should.be.an.Object;
+          res.users[0].links.lover.links.lover.id.should.equal(ids.users[0]);
+          done();
+        });
+      });
     });
 
     util.requireSpecs(__dirname, ["compound-documents"]);
