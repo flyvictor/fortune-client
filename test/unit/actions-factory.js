@@ -92,6 +92,13 @@ module.exports = function(util){
             }).catch(done); 
         });
 
+        it("should pass params.id if the resource id is passed to the action", function(done){
+            actions.list.callResourceSecondAction.call(actions.list, "my-id", null, {})().then(function() {
+                fortune.direct.callAction.getCall(0).args[2].params.id.should.be.eql("my-id");
+                done();
+            }).catch(done); 
+        });
+
 
     });
   });
