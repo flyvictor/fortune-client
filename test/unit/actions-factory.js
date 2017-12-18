@@ -9,7 +9,7 @@ var actionFactory = require("../../lib/actions-factory"),
 module.exports = function(util){
   describe("actions", function(){
     describe("with fortune", function(){
-      var actions;
+      var actions, data;
       var mixin,
           fortune = {
             direct: {
@@ -18,6 +18,8 @@ module.exports = function(util){
           };
       
         beforeEach(function(){
+            data = { testBody: "test"  };
+
             actions = actionFactory(fortune.direct, [
             {
                 name: "resource", 
@@ -31,7 +33,7 @@ module.exports = function(util){
                     "second-action": 
                     {
                         name: 'second-action',
-                        method: 'POST'
+                        method: 'GET'
                     
                     }
 
@@ -60,39 +62,36 @@ module.exports = function(util){
         
 
 
-        it("call an action", function(done){
-            var data = {
-              params: {},
-              body: {
-                  testBody: "test"
-              }
-            };
-            actions.list.callResourceFirstAction("my-id", "POST", data)().then(function(){
+        it("should put data on body if method is not in [DELETE, GET]", function(done){
+
+            actions.list.callResourceFirstAction.call(actions.list, "my-id", data, {})().then(function(){
                 fortune.direct.callAction.calledWith("resources", "POST", {
+                    query: {},
                     params: {id: "my-id", key:"first-action"},
-                    body: data.body
+                    body: { testBody: "test"  }
                 }).should.be.true;
                 done();
             }).catch(done);  
         });
-        it("should crash withoud id", function(done){
-            var data = {
-              params: {},
-              body: {
-                  testBody: "test"
-              }
-            };
-
-            try 
-            {
-                actions.list.callResourceFirstAction(null, "POST", data)().then(function(){
-                    done(Error("should be crashed"));
-                }).catch(done);  
-            }
-            catch (e) {
-                done(); 
-            }
+        it("should put data on query obj if GET request without id", function(done){
+            actions.list.callResourceSecondAction.call(actions.list, null, data, {})().then(function() {
+                fortune.direct.callAction.calledWith("resources", "GET", {
+                    query: { testBody: "test"  },
+                    params: { key:"second-action"},
+                }).should.be.true;
+                done();
+            }).catch(done); 
         });
+        it("should put data on query obj if DELETE request without id", function(done){
+            actions.list.callResourceSecondAction.call(actions.list, null, data, {})().then(function() {
+                fortune.direct.callAction.calledWith("resources", "GET", {
+                    query: { testBody: "test"  },
+                    params: { key:"second-action"},
+                }).should.be.true;
+                done();
+            }).catch(done); 
+        });
+
 
     });
   });
