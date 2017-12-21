@@ -94,7 +94,7 @@ module.exports = function(util){
             actions.list.callResourceSecondAction.call(actions.list, null, data, {})().then(function() {
                 fortune.direct.callGenericAction.calledWith("resources", "GET", {
                     query: { testBody: "test"  },
-                    params: { key:"second-action"},
+                    params: { action:"second-action"},
                 }).should.be.true;
                 done();
             }).catch(done); 
@@ -103,7 +103,7 @@ module.exports = function(util){
             actions.list.callResourceSecondAction.call(actions.list, null, data, {})().then(function() {
                 fortune.direct.callGenericAction.calledWith("resources", "GET", {
                     query: { testBody: "test"  },
-                    params: { key:"second-action"},
+                    params: { action:"second-action"},
                 }).should.be.true;
                 done();
             }).catch(done); 
