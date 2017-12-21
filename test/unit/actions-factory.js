@@ -4,8 +4,6 @@ var actionFactory = require("../../lib/actions-factory"),
     when = require("when");
 
 
-//REFACTOR: DRY diff syntax - same request tests.
-
 module.exports = function(util){
   describe("actions", function(){
     describe("with fortune", function(){
@@ -14,6 +12,7 @@ module.exports = function(util){
           fortune = {
             direct: {
               callAction: function(){},
+              callGenericAction: function () {}
             }
           };
       
@@ -29,11 +28,13 @@ module.exports = function(util){
                     {
                         name: 'first-action',
                         method: 'POST',
+                        isGeneric: false
                     }, 
                     "second-action": 
                     {
                         name: 'second-action',
-                        method: 'GET'
+                        method: 'GET', 
+                        isGeneric: true
                     
                     }
 
@@ -58,6 +59,22 @@ module.exports = function(util){
             }]);
 
             util.sandbox.stub(fortune.direct, "callAction").returns(when.resolve());
+            util.sandbox.stub(fortune.direct, "callGenericAction").returns(when.resolve());
+        });
+
+        it("should call callAction if isn t a generic action", function(done){
+            actions.list.callResourceFirstAction.call(actions.list, "my-id", null, {})().then(function() {
+                fortune.direct.callAction.callCount.should.be.eql(1);
+                fortune.direct.callGenericAction.callCount.should.be.eql(0);
+                done();
+            }).catch(done); 
+        });
+        it("should call callGenericAction if is a generic action", function(done){
+            actions.list.callResourceSecondAction.call(actions.list, "my-id", null, {})().then(function() {
+                fortune.direct.callGenericAction.callCount.should.be.eql(1);
+                fortune.direct.callAction.callCount.should.be.eql(0);
+                done();
+            }).catch(done); 
         });
         
 
@@ -75,7 +92,7 @@ module.exports = function(util){
         });
         it("should put data on query obj if GET request without id", function(done){
             actions.list.callResourceSecondAction.call(actions.list, null, data, {})().then(function() {
-                fortune.direct.callAction.calledWith("resources", "GET", {
+                fortune.direct.callGenericAction.calledWith("resources", "GET", {
                     query: { testBody: "test"  },
                     params: { key:"second-action"},
                 }).should.be.true;
@@ -84,7 +101,7 @@ module.exports = function(util){
         });
         it("should put data on query obj if DELETE request without id", function(done){
             actions.list.callResourceSecondAction.call(actions.list, null, data, {})().then(function() {
-                fortune.direct.callAction.calledWith("resources", "GET", {
+                fortune.direct.callGenericAction.calledWith("resources", "GET", {
                     query: { testBody: "test"  },
                     params: { key:"second-action"},
                 }).should.be.true;
@@ -93,12 +110,11 @@ module.exports = function(util){
         });
 
         it("should pass params.id if the resource id is passed to the action", function(done){
-            actions.list.callResourceSecondAction.call(actions.list, "my-id", null, {})().then(function() {
+            actions.list.callResourceFirstAction.call(actions.list, "my-id", null, {})().then(function() {
                 fortune.direct.callAction.getCall(0).args[2].params.id.should.be.eql("my-id");
                 done();
             }).catch(done); 
         });
-
 
     });
   });
