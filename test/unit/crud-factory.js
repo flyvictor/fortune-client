@@ -20,7 +20,7 @@ module.exports = function(util){
               update: function(){}
             }
           };
-      
+
       beforeEach(function(){
         crud = crudFactory(fortune.direct, [
           {name: "resource", route: "resources"},
@@ -33,7 +33,7 @@ module.exports = function(util){
         util.sandbox.stub(fortune.direct, "replace").returns(when.resolve());
         util.sandbox.stub(fortune.direct, "update").returns(when.resolve());
       });
-      
+
 
       it("gets a single document", function(done){
         crud.fancy.getResource(0,{opts:true})().then(function(){
@@ -215,7 +215,7 @@ module.exports = function(util){
       describe("parent request", function(){
         it("is passed through to the crud callback", function(done){
           var parent = {parentRequest: "is me"};
-          
+
           crud.fancy.getResource(0, {parentRequest: parent})(function(config){
             config.parentRequest.should.be.equal(parent);
             done();
@@ -299,6 +299,15 @@ module.exports = function(util){
           done(new Error("Promise with error should be rejected"));
         }).catch(function(error) {
           error.message.should.eql("MongoError: database not found");
+          done();
+        });
+      });
+      it("rejects a promise if error in body returned", function(done) {
+        fortune.direct.get.returns(when.resolve({ body: { error: 'Oops, something went wrong.', detail: 'Error: error from hook' }}));
+        crud.fancy.getResource(0,{opts:true})().then(function(){
+          done(new Error("Promise with error should be rejected"));
+        }).catch(function(error) {
+          error.message.should.eql("Error: error from hook");
           done();
         });
       });
