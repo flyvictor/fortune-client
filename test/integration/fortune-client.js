@@ -2,7 +2,8 @@ var setup = require("./setup"),
     should = require("should"),
     fortuneClient = require("../../lib/fortune-client"),
     assert = require("assert"),    
-    _ = require("lodash");
+    _ = require("lodash"),
+    when = require("when");
 
 
 module.exports = function(util){
@@ -576,6 +577,28 @@ module.exports = function(util){
           res.users[0].links.address.id.should.equal(ids.addresses[0]);
           done();
         })
+      });
+      it('should denormalize one-to-many > one-to-many refs', function(done){
+        when.all(_.map(ids.instruments, function(instument, index) {
+          return client.updateInstrument(instument, [
+            {op: 'replace', path: '/users/0/owner', value: ids.users[index]}
+          ]).then(function() {
+            return client.updateUser(ids.users[index], [
+              {op: 'replace', path: '/users/0/band', value: ids.bands[index]}
+            ])
+          })
+
+        })).then(function() {
+          client.getInstruments({}, {include: 'owner,owner.band', denormalize: true}).then(function(res) {
+            _.each(res.instruments, function(instument) {
+              instument.links.owner.should.be.an.Object;
+              instument.links.owner.id.should.eql(ids.users[ids.instruments.indexOf(instument.id)]);
+              instument.links.owner.links.band.should.be.an.Object;
+              instument.links.owner.links.band.id.should.eql(ids.bands[ids.instruments.indexOf(instument.id)]);
+            });
+            done();
+          })
+        });
       });
       it('should denormalize many-to-one refs', function(done){
         client.getUser(ids.users[0], {include: 'instruments', denormalize: true}).then(function(res){
