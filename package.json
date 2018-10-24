@@ -15,9 +15,9 @@
     "node": ">=0.10"
   },
   "dependencies": {
+    "cross-fetch": "2.2.2",
     "lodash": "~2.4.1",
-    "request": "2.81.0",
-    "requesto": "~0.0.1",
+    "qs": "6.5.2",
     "when": "~3.2.3"
   },
   "devDependencies": {
