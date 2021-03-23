@@ -2,8 +2,7 @@ var setup = require("./setup"),
     should = require("should"),
     fortuneClient = require("../../lib/fortune-client"),
     assert = require("assert"),    
-    _ = require("lodash"),
-    when = require("when");
+    _ = require("lodash");
 
 
 module.exports = function(util){
@@ -579,7 +578,7 @@ module.exports = function(util){
         })
       });
       it('should denormalize one-to-many > one-to-many refs', function(done){
-        when.all(_.map(ids.instruments, function(instument, index) {
+        Promise.all(_.map(ids.instruments, function(instument, index) {
           return client.updateInstrument(instument, [
             {op: 'replace', path: '/users/0/owner', value: ids.users[index]}
           ]).then(function() {

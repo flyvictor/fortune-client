@@ -1,7 +1,6 @@
 'use strict';
 var setup = require("./setup");
 var should = require("should");
-var when = require("when");
 var fortuneClient = require('../../lib/fortune-client');
 var _ = require('lodash');
 
@@ -24,7 +23,7 @@ module.exports = function(util){
           });
         });
         util.ids = ids;
-        return when.all(ids.users.map(function(userId, index){
+        return Promise.all(ids.users.map(function(userId, index){
           return client.updateUser(userId, [{
             op: 'replace', path: '/users/0/links/band', value: ids.bands[index]
           }]).then(function(){

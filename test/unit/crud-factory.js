@@ -1,7 +1,6 @@
 var crudFactory = require("../../lib/crud-factory"),
     _ = require("lodash"),
-    should = require("should"),
-    when = require("when");
+    should = require("should");
 
 
 //REFACTOR: DRY diff syntax - same request tests.
@@ -27,11 +26,11 @@ module.exports = function(util){
           {name: "singular-only", route: "singular-only"}
         ], ["get", "create", "replace", "update", "destroy"]);
 
-        util.sandbox.stub(fortune.direct, "get").returns(when.resolve());
-        util.sandbox.stub(fortune.direct, "create").returns(when.resolve());
-        util.sandbox.stub(fortune.direct, "destroy").returns(when.resolve());
-        util.sandbox.stub(fortune.direct, "replace").returns(when.resolve());
-        util.sandbox.stub(fortune.direct, "update").returns(when.resolve());
+        util.sandbox.stub(fortune.direct, "get").returns(Promise.resolve());
+        util.sandbox.stub(fortune.direct, "create").returns(Promise.resolve());
+        util.sandbox.stub(fortune.direct, "destroy").returns(Promise.resolve());
+        util.sandbox.stub(fortune.direct, "replace").returns(Promise.resolve());
+        util.sandbox.stub(fortune.direct, "update").returns(Promise.resolve());
       });
 
 
@@ -294,7 +293,7 @@ module.exports = function(util){
         });
       });
       it("rejects a promise if error returned", function(done) {
-        fortune.direct.get.returns(when.resolve({ error: "Something wrong happened", detail: "MongoError: database not found" }));
+        fortune.direct.get.returns(Promise.resolve({ error: "Something wrong happened", detail: "MongoError: database not found" }));
         crud.fancy.getResource(0,{opts:true})().then(function(){
           done(new Error("Promise with error should be rejected"));
         }).catch(function(error) {
@@ -303,7 +302,7 @@ module.exports = function(util){
         });
       });
       it("rejects a promise if error in body returned", function(done) {
-        fortune.direct.get.returns(when.resolve({ body: { error: 'Oops, something went wrong.', detail: 'Error: error from hook' }}));
+        fortune.direct.get.returns(Promise.resolve({ body: { error: 'Oops, something went wrong.', detail: 'Error: error from hook' }}));
         crud.fancy.getResource(0,{opts:true})().then(function(){
           done(new Error("Promise with error should be rejected"));
         }).catch(function(error) {
@@ -312,7 +311,7 @@ module.exports = function(util){
         });
       });
       it("rejects a promise with main error if detail is absent", function(done) {
-        fortune.direct.get.returns(when.resolve({ error: "Something wrong happened" }));
+        fortune.direct.get.returns(Promise.resolve({ error: "Something wrong happened" }));
         crud.fancy.getResource(0,{opts:true})().then(function(){
           done(new Error("Promise with error should be rejected"));
         }).catch(function(error) {

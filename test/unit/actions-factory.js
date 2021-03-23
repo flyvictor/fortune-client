@@ -1,7 +1,6 @@
 var actionFactory = require("../../lib/actions-factory"),
     _ = require("lodash"),
-    should = require("should"),
-    when = require("when");
+    should = require("should");
 
 
 module.exports = function(util){
@@ -58,8 +57,8 @@ module.exports = function(util){
                 }
             }]);
 
-            util.sandbox.stub(fortune.direct, "callAction").returns(when.resolve());
-            util.sandbox.stub(fortune.direct, "callGenericAction").returns(when.resolve());
+            util.sandbox.stub(fortune.direct, "callAction").returns(Promise.resolve());
+            util.sandbox.stub(fortune.direct, "callGenericAction").returns(Promise.resolve());
         });
 
         it("should call callAction if isn t a generic action", function(done){
