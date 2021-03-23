@@ -1,5 +1,4 @@
-var when = require("when"),
-    _ = require("lodash"),
+var _ = require("lodash"),
     request = require("supertest"),
     should = require("should");
 
@@ -25,15 +24,15 @@ module.exports = _.bindAll({ //<<<< HERE binding all methods at once
       app.fortune = require("./"+name+"-fortune")().listen(app.port);
     });
     
-    return when.all(_.map(this.apps, function(app){
+    return Promise.all(_.map(this.apps, function(app){
       return app.fortune.adapter.awaitConnection();
     })).catch(function(err){ console.trace(err); })
       .then(this.wipeCollections);
   },
   wipeCollections: function(){
-    return when.all(_.map(this.apps.users.fortune.adapter.mongoose.connections, function(conn){
-      return when.all(_.map(_.keys(conn.collections), function(name){
-        return when.promise(function(resolve, reject){
+    return Promise.all(_.map(this.apps.users.fortune.adapter.mongoose.connections, function(conn){
+      return Promise.all(_.map(_.keys(conn.collections), function(name){
+        return new Promise(function(resolve, reject){
           conn.db.collection(name, function(err, collection){
             if(err){
               reject(err);
@@ -54,8 +53,8 @@ module.exports = _.bindAll({ //<<<< HERE binding all methods at once
   populate: function(){
     var self = this;
     
-    return when.all(_.map(this.apps, function(app,appName){
-      return when.all(_.map(require("./fixtures/"+appName+".json"), function(data,resName){
+    return Promise.all(_.map(this.apps, function(app,appName){
+      return Promise.all(_.map(require("./fixtures/"+appName+".json"), function(data,resName){
         return self._populateResource(app,data,resName).then(function(resource){
           _.extend(self.apps[appName].resources, resource);
         });          
@@ -68,7 +67,7 @@ module.exports = _.bindAll({ //<<<< HERE binding all methods at once
 
     body[name] = data;
 
-    return when.promise(function(resolve){
+    return new Promise(function(resolve){
       request(baseUrl + ":" + app.port)
         .post("/" + name)
         .send(body)

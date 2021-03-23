@@ -1,5 +1,4 @@
 'use strict';
-var when = require("when");
 var should = require('should');
 var sinon = require("sinon");
 
@@ -38,7 +37,7 @@ module.exports = function() {
             }
           }
         ],
-        get: sinon.stub().returns(when.resolve({}))
+        get: sinon.stub().returns(Promise.resolve({}))
       };
     });
 
@@ -73,7 +72,7 @@ module.exports = function() {
         limit: 0,
         userAuthToken: undefined
       };
-      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(when.resolve({
+      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(Promise.resolve({
         posts: [
           { id: "firstid" },
           { id: "secondid" }
@@ -121,7 +120,7 @@ module.exports = function() {
         limit: 0,
         userAuthToken: undefined
       };
-      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(when.resolve({
+      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(Promise.resolve({
         posts: [{ id: "postone" }]
       }));
 
@@ -153,7 +152,7 @@ module.exports = function() {
         limit: 0,
         userAuthToken: undefined
       };
-      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(when.resolve({
+      fortuneClient.get.withArgs("posts", reqFilter, reqParams).returns(Promise.resolve({
         posts: [{ id: "postone" }]
       }));
 

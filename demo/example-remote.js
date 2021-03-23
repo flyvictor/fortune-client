@@ -1,5 +1,4 @@
 "use strict";
-var when = require("when");
 var should = require("should");
 var _ = require("lodash");
 
@@ -9,7 +8,7 @@ var bandsFortune = require("./setup/bands-fortune")();
 usersFortune.listen(1337);
 bandsFortune.listen(1338);
 
-when.all([
+Promise.all([
   //Resources are set up asynchronously
   usersFortune.adapter.awaitConnection(),
   bandsFortune.adapter.awaitConnection()
@@ -58,9 +57,9 @@ when.all([
 });
 
 function teardown(){
-  return when.all(_.map(usersFortune.adapter.mongoose.connections, function(conn){
-    return when.all(_.map(_.keys(conn.collections), function(name){
-      return when.promise(function(resolve, reject){
+  return Promise.all(_.map(usersFortune.adapter.mongoose.connections, function(conn){
+    return Promise.all(_.map(_.keys(conn.collections), function(name){
+      return new Promise(function(resolve, reject){
         conn.db.collection(name, function(err, collection){
           if(err){
             reject(err);

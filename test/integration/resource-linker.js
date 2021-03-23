@@ -1,7 +1,6 @@
 var resourceLinker = require("../../lib/resource-linker"),
     router = require("../../lib/router")(),
-    should = require("should"),
-    when = require("when"),
+    should = require("should")
     sinon = require("sinon"),
     _ = require("lodash");
 
@@ -129,8 +128,8 @@ describe("fortune resource linker", function(){
     router.actions = actions;
     linker = resourceLinker(router);
 
-    router.actions.getAircraft.returns(when.resolve(stubs().aircraftResource));
-    router.actions.getOperators.returns(when.resolve(stubs().operatorResource));
+    router.actions.getAircraft.returns(Promise.resolve(stubs().aircraftResource));
+    router.actions.getOperators.returns(Promise.resolve(stubs().operatorResource));
 
     trigger = router.onResponse.getCall(0).args[0];
   });
