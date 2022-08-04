@@ -106,11 +106,7 @@ module.exports = function(util) {
       });
 
       it('should not denormalize layers for the same objects more that one time', function(){
-        // Let's stub _rebaseLinks to check call counts
-        const originalRebaseLinks = denormalize._rebaseLinks;
-        sinon.stub(denormalize, '_rebaseLinks', function() {
-          return originalRebaseLinks.apply(null, arguments)
-        })
+        const rebaseLinksSpy = sinon.spy(denormalize, '_rebaseLinks');
 
         // create deep relations with two branches and a few objects in each level:
         // events - user - account owner - office - country
@@ -157,7 +153,7 @@ module.exports = function(util) {
         denormalize.denormalize( config, { body: body } );
 
         // events.source + sources.country + events.user + events.office + users.accountOwner + users.office + offices.country
-        denormalize._rebaseLinks.callCount.should.eql(6);
+        rebaseLinksSpy.callCount.should.eql(6);
 
         office.links.country.should.eql(country);
         source.links.country.should.eql(country);

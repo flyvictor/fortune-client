@@ -120,7 +120,7 @@ describe("fortune resource linker", function(){
   var linker, trigger;
 
   beforeEach(function(){
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
     sandbox.stub(router, "onResponse");
     sandbox.stub(actions, "getAircraft");
     sandbox.stub(actions, "getOperators");
