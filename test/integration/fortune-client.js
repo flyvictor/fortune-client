@@ -543,6 +543,17 @@ module.exports = function(util){
       });
     });
 
+    it("should throw an error if onErrorHook calls multiple times", function(done){
+      try {
+        client.onErrorHook(() => {});
+        client.onErrorHook(() => {});
+      } catch (err) {
+        should.exist(err);
+        err.message.should.eql('On error hook is already defined');
+        done();
+      }
+    });
+
     it("should call onErrorHook for each error if hook is provided", function(done){
       const onErrorHook = sinon.spy((error, dispatch) => {
         return dispatch();
