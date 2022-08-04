@@ -2,9 +2,10 @@ var should = require("should"),
     sinon = require("sinon"),
     util = require("../util");
 
+
 describe("UNIT TESTS", function(){
   beforeEach(function(){
-    util.sandbox = sinon.sandbox.create();
+    util.sandbox = sinon.createSandbox();
   });
 
   afterEach(function(){

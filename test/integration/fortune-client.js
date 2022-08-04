@@ -1,8 +1,8 @@
 var setup = require("./setup"),
     should = require("should"),
     fortuneClient = require("../../lib/fortune-client"),
-    assert = require("assert"),    
-    _ = require("lodash");
+    _ = require("lodash"),
+    isomorphicClient = require('../../lib/isomorphic-http-client');
 
 
 module.exports = function(util){
@@ -543,24 +543,82 @@ module.exports = function(util){
       });
     });
 
+    it("should throw an error if onErrorHook calls multiple times", function(done){
+      try {
+        client.onErrorHook(() => {});
+        client.onErrorHook(() => {});
+      } catch (err) {
+        should.exist(err);
+        err.message.should.eql('On error hook is already defined');
+        done();
+      }
+    });
+
+    it("should call onErrorHook for each error if hook is provided", function(done){
+      const onErrorHook = sinon.spy((error, dispatch) => {
+        return dispatch();
+      });
+      client.onErrorHook(onErrorHook);
+
+      const originalGet = isomorphicClient.get;
+      sinon.stub(isomorphicClient, 'get').returns(Promise.reject('error-1'));
+      isomorphicClient.get.onCall(2).callsFake(function() {
+        return originalGet.apply(null, arguments);
+      });
+
+      client.getUsers({name: 'Sweeney'}).then(function(data){
+        data.users.length.should.be.equal(1);
+        data.users[0].name.should.be.equal('Sweeney');
+
+        isomorphicClient.get.callCount.should.eql(3);
+        onErrorHook.callCount.should.eql(2);
+
+        isomorphicClient.get.restore();
+        done();
+      });
+    });
+
+    it("should allow to return original error from onErrorHook", function(done){
+      const onErrorHook = sinon.spy((error, dispatch, continueWithError) => {
+        // trying to call dispatch 3 times
+        if (onErrorHook.callCount < 3) return dispatch();
+        return continueWithError();
+      });
+      client.onErrorHook(onErrorHook);
+      sinon.stub(isomorphicClient, 'get').returns(Promise.reject('error-1'));
+      client.getUsers({name: 'Sweeney'}).then(function(){
+        throw new Error('should not reach this line');
+      }).catch(err => {
+        onErrorHook.callCount.should.eql(3);
+        err.should.eql('error-1');
+
+        isomorphicClient.get.restore();
+        done();
+      });
+    });
+
     describe("denormalization", function(){
-      beforeEach(function(done){
-         client.updateUser(ids.users[0], [
-           {op: 'add', path: '/users/0/instruments', value: ids.instruments[0]},
-            {op: 'replace', path: '/users/0/address', value: ids.addresses[0]},
-            {op: 'replace', path: '/users/0/lover', value: ids.users[1]}
-          ]).then(function(){
- 	  return client.updateUser(ids.users[1], [
- 	    {op: 'replace', path: '/users/0/lover', value: ids.users[0]}
- 	  ]);
- 	}).then(function(){
- 	  return client.updateAddress(ids.addresses[0], [
- 	    {op: 'add', path: '/addresses/0/inhabitants', value: ids.users[0]}
- 	  ]);
- 	})
- 	.then(function(){
+      beforeEach(function (done) {
+        client.updateUser(ids.users[0], [
+          {
+            op: 'add',
+            path: '/users/0/instruments',
+            value: ids.instruments[0]
+          },
+          { op: 'replace', path: '/users/0/address', value: ids.addresses[0] },
+          { op: 'replace', path: '/users/0/lover', value: ids.users[1] }
+        ]).then(function () {
+          return client.updateUser(ids.users[1], [
+            { op: 'replace', path: '/users/0/lover', value: ids.users[0] }
+          ]);
+        }).then(function () {
+          return client.updateAddress(ids.addresses[0], [
+            { op: 'add', path: '/addresses/0/inhabitants', value: ids.users[0] }
+          ]);
+        })
+          .then(function () {
             done();
-         });
+          });
       });
       
       it('should denormalize one-to-one refs', function(done){
@@ -631,4 +689,3 @@ module.exports = function(util){
     util.requireSpecs(__dirname, ["compound-documents"]);
   });
 };
-

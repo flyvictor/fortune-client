@@ -21,11 +21,11 @@
     "qs": "6.5.2"
   },
   "devDependencies": {
-    "fortune": "git://github.com/flyvictor/fortune.git",
-    "mocha": "~1.20.1",
+    "fortune": "git+ssh://github.com/flyvictor/fortune.git",
+    "mocha": "~2.2.4",
     "should": "~4.0.4",
     "supertest": "~0.13.0",
-    "sinon": "~1.10.2"
+    "sinon": "12.0.1"
   },
   "scripts": {
     "test": "node_modules/mocha/bin/mocha --recursive -R spec"
