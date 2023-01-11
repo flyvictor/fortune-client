@@ -33,10 +33,10 @@
     "fortune": "git+ssh://github.com/flyvictor/fortune.git",
     "husky": "4.3.8",
     "lint-staged": "11.1.2",
-    "mocha": "~2.2.4",
+    "mocha": "~10.2.0",
     "prettier": "^2.4.1",
     "should": "~4.0.4",
-    "supertest": "~0.13.0",
+    "supertest": "~6.3.3",
     "sinon": "12.0.1"
   },
   "scripts": {
