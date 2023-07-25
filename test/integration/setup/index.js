@@ -23,7 +23,7 @@ module.exports = _.bindAll({ //<<<< HERE binding all methods at once
     _.each(this.apps, function(app,name){
       app.fortune = require("./"+name+"-fortune")().listen(app.port);
     });
-    
+
     return Promise.all(_.map(this.apps, function(app){
       return app.fortune.adapter.awaitConnection();
     })).catch(function(err){ console.trace(err); })
@@ -52,12 +52,12 @@ module.exports = _.bindAll({ //<<<< HERE binding all methods at once
   },
   populate: function(){
     var self = this;
-    
+
     return Promise.all(_.map(this.apps, function(app,appName){
       return Promise.all(_.map(require("./fixtures/"+appName+".json"), function(data,resName){
         return self._populateResource(app,data,resName).then(function(resource){
           _.extend(self.apps[appName].resources, resource);
-        });          
+        });
       }));
     })).then(function(){ return; });
   },
@@ -74,9 +74,9 @@ module.exports = _.bindAll({ //<<<< HERE binding all methods at once
         .expect(201)
         .end(function(err, res){
           should.not.exist(err);
-          
+
           resolve(JSON.parse(res.text));
         });
     });
   }
-});
+}, ['initialiseFortunes', 'wipeCollections', 'populate', '_populateResource']);

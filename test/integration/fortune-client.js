@@ -14,13 +14,13 @@ module.exports = function(util){
                                             setup.apps.bands.fortune]);
 
       client.ready.then(function(){
-        resourceNames = _.pluck(_.union.apply(_,_.map(setup.apps, function(app){
+        resourceNames = _.map(_.union.apply(_,_.map(setup.apps, function(app){
           return app.fortune.resources();
         })), "name");
 
         _.each(setup.apps, function(app){
           _.each(app.resources, function(documents, name){
-            ids[name] = _.pluck(documents, "id");
+            ids[name] = _.map(documents, "id");
           });
         });
         util.ids = ids;
@@ -33,7 +33,7 @@ module.exports = function(util){
     });
 
     it("requests resource metadata", function(){
-      _.pluck(client.resources, "name").sort().should.be.eql(resourceNames.sort());
+      _.map(client.resources, "name").sort().should.be.eql(resourceNames.sort());
     });
 
 
@@ -77,7 +77,7 @@ module.exports = function(util){
         name: "Phil",
         email: "phil@abc.com"
       };
-      
+
       client.createUsers([user1, user2]).then(function(data){
         data.users.length.should.be.equal(2);
         done();
@@ -98,7 +98,7 @@ module.exports = function(util){
 
     it("allows destroying a document", function(done){
       var count, id;
-      
+
       client.getUsers().then(function(data){
         count = data.users.length;
         count.should.be.above(0);
@@ -107,7 +107,7 @@ module.exports = function(util){
         return client.getUsers();
       }).then(function(data){
         data.users.length.should.be.equal(count - 1);
-        _.contains(_.pluck(data.users, "id"), id).should.be.false;
+        _.includes(_.map(data.users, "id"), id).should.be.false;
         done();
       });
     });
@@ -135,7 +135,7 @@ module.exports = function(util){
 
     it.skip("allows destroying a set of documents", function(done){
       var ids, count;
-      
+
       client.getUsers().then(function(data){
         count = data.users.length;
         ids = [data.users[0].id,data.users[1].id];
@@ -145,8 +145,8 @@ module.exports = function(util){
         return client.getUsers();
       }).then(function(data){
         data.users.length.should.be.equal(count-2);
-        _.contains(_.pluck(data.users, "id"), ids[0]).should.be.false;
-        _.contains(_.pluck(data.users, "id"), ids[1]).should.be.false;
+        _.includes(_.map(data.users, "id"), ids[0]).should.be.false;
+        _.includes(_.map(data.users, "id"), ids[1]).should.be.false;
         done();
       });
     });
@@ -163,13 +163,13 @@ module.exports = function(util){
 
     it("allows replacing a document", function(done){
       var user;
-      
+
       client.getUser(ids.users[0]).then(function(data){
         user = data.users[0];
         return client.replaceUser(user.id, _.extend({}, user, {name: "1234"}));
       }).then(function(data){
         return client.getUser(ids.users[0]);
-      }).then(function(data){ 
+      }).then(function(data){
         data.users[0].name.should.be.equal("1234");
         done();
       }).catch(function(err){ console.trace(err); });
@@ -204,26 +204,26 @@ module.exports = function(util){
     it("supports the light syntax for fields", function(done){
       client.getUsers(null, {fields: "name"}).then(function(data){
         var fields = _.keys(data.users[0]);
-        
+
         fields.length.should.be.equal(2); // id is included regardless of fields
-        _.contains(fields, "name").should.be.true;
-        _.contains(fields, "id").should.be.true;
-        
+        _.includes(fields, "name").should.be.true;
+        _.includes(fields, "id").should.be.true;
+
         return client.getUsers(null, {fields: ["name", "email"]});
       }).then(function(data){
         var fields = _.keys(data.users[0]);
-        
+
         fields.length.should.be.equal(3);
-        _.contains(fields, "name").should.be.true;
-        _.contains(fields, "id").should.be.true;
-        _.contains(fields, "email").should.be.true;          
+        _.includes(fields, "name").should.be.true;
+        _.includes(fields, "id").should.be.true;
+        _.includes(fields, "email").should.be.true;
         done();
       });
     });
 
     it("passes the parent request context option to onRequest", function(done){
       var parent = { parentRequest: "is me" };
-      
+
       client.onRequest(function(config){
         config.parentRequest.should.be.equal(parent);
         done();
@@ -234,7 +234,7 @@ module.exports = function(util){
 
     it("passes the parent request context option to onResponse", function(done){
       var parent = { parentRequest: "is me" };
-      
+
       client.onResponse(function(config){
         config.parentRequest.should.be.equal(parent);
         done();
@@ -291,7 +291,6 @@ module.exports = function(util){
         });
       });
     });
-
     util.requireSpecs(__dirname, ["compound-documents"]);
   });
 
@@ -302,13 +301,13 @@ module.exports = function(util){
       util.client = client = fortuneClient(['http://localhost:9782', 'http://localhost:9783']);
 
       client.ready.then(function(){
-        resourceNames = _.pluck(_.union.apply(_,_.map(setup.apps, function(app){
+        resourceNames = _.map(_.union.apply(_,_.map(setup.apps, function(app){
           return app.fortune.resources();
         })), "name");
 
         _.each(setup.apps, function(app){
           _.each(app.resources, function(documents, name){
-            ids[name] = _.pluck(documents, "id");
+            ids[name] = _.map(documents, "id");
           });
         });
         util.ids = ids;
@@ -321,7 +320,7 @@ module.exports = function(util){
     });
 
     it("requests resource metadata", function(){
-      _.pluck(client.resources, "name").sort().should.be.eql(resourceNames.sort());
+      _.map(client.resources, "name").sort().should.be.eql(resourceNames.sort());
     });
 
     it("allows getting a collection of resources", function(done){
@@ -382,7 +381,7 @@ module.exports = function(util){
         name: "Phil",
         email: "phil@abc.com"
       };
-      
+
       client.createUsers([user1, user2]).then(function(data){
         data.users.length.should.be.equal(2);
         done();
@@ -403,7 +402,7 @@ module.exports = function(util){
 
     it("allows destroying a document", function(done){
       var count, id;
-      
+
       client.getUsers().then(function(data){
         count = data.users.length;
         count.should.be.above(0);
@@ -412,14 +411,14 @@ module.exports = function(util){
         return client.getUsers();
       }).then(function(data){
         data.users.length.should.be.equal(count - 1);
-        _.contains(_.pluck(data.users, "id"), id).should.be.false;
+        _.includes(_.map(data.users, "id"), id).should.be.false;
         done();
       });
     });
 
     it.skip("allows destroying a set of documents", function(done){
       var ids, count;
-      
+
       client.getUsers().then(function(data){
         count = data.users.length;
         ids = [data.users[0].id,data.users[1].id];
@@ -429,8 +428,8 @@ module.exports = function(util){
         return client.getUsers();
       }).then(function(data){
         data.users.length.should.be.equal(count-2);
-        _.contains(_.pluck(data.users, "id"), ids[0]).should.be.false;
-        _.contains(_.pluck(data.users, "id"), ids[1]).should.be.false;
+        _.includes(_.map(data.users, "id"), ids[0]).should.be.false;
+        _.includes(_.map(data.users, "id"), ids[1]).should.be.false;
         done();
       });
     });
@@ -447,13 +446,13 @@ module.exports = function(util){
 
     it("allows replacing a document", function(done){
       var user;
-      
+
       client.getUser(ids.users[0]).then(function(data){
         user = data.users[0];
         return client.replaceUser(user.id, _.extend({}, user, {name: "1234"}));
       }).then(function(data){
         return client.getUser(ids.users[0]);
-      }).then(function(data){ 
+      }).then(function(data){
         data.users[0].name.should.be.equal("1234");
         done();
       }).catch(function(err){ console.trace(err); });
@@ -488,26 +487,26 @@ module.exports = function(util){
     it("supports the light syntax for fields", function(done){
       client.getUsers(null, {fields: "name"}).then(function(data){
         var fields = _.keys(data.users[0]);
-        
+
         fields.length.should.be.equal(2); // id is included regardless of fields
-        _.contains(fields, "name").should.be.true;
-        _.contains(fields, "id").should.be.true;
-        
+        _.includes(fields, "name").should.be.true;
+        _.includes(fields, "id").should.be.true;
+
         return client.getUsers(null, {fields: ["name", "email"]});
       }).then(function(data){
         var fields = _.keys(data.users[0]);
-        
+
         fields.length.should.be.equal(3);
-        _.contains(fields, "name").should.be.true;
-        _.contains(fields, "id").should.be.true;
-        _.contains(fields, "email").should.be.true;          
+        _.includes(fields, "name").should.be.true;
+        _.includes(fields, "id").should.be.true;
+        _.includes(fields, "email").should.be.true;
         done();
       });
     });
 
     it("passes the parent request context option to onRequest", function(done){
       var parent = { parentRequest: "is me" };
-      
+
       client.onRequest(function(config){
         config.parentRequest.should.be.equal(parent);
         done();
@@ -518,7 +517,7 @@ module.exports = function(util){
 
     it("passes the parent request context option to onResponse", function(done){
       var parent = { parentRequest: "is me" };
-      
+
       client.onResponse(function(config){
         config.parentRequest.should.be.equal(parent);
         done();
@@ -620,7 +619,7 @@ module.exports = function(util){
             done();
           });
       });
-      
+
       it('should denormalize one-to-one refs', function(done){
         client.getUser(ids.users[0], {include: 'lover', denormalize: true}).then(function(res){
           res.users[0].links.lover.should.be.an.Object;

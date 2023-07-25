@@ -3,11 +3,11 @@ var _ = require("lodash");
 module.exports = function(util){
   describe("compound documents", function(){
     var client, ids;
-    
+
     beforeEach(function(done){
       client = util.client;
       ids = util.ids;
-      
+
       client.updateBand(ids.bands[0], {
         op: "add",
         path: "/bands/0/members/-",
@@ -22,7 +22,7 @@ module.exports = function(util){
         done();
       });
     });
-    
+
     it("are linked externally", function(done){
       client.getBand(ids.bands[0],{query: {include:"members"}}).then(function(body){
         body.linked.should.be.an.Object;
@@ -46,7 +46,7 @@ module.exports = function(util){
       }).then(function(body){
         body.linked.users.length.should.equal(1);
         body.linked.users[0].id.should.be.equal(ids.users[0]);
-        
+
         body.linked.genres.length.should.equal(1);
         body.linked.genres[0].id.should.be.equal(ids.genres[0]);
 
@@ -72,7 +72,7 @@ module.exports = function(util){
         data.bands[0].links.genres.length.should.be.equal(2);
         data.linked.genres.length.should.be.equal(2);
 
-        _.pluck(data.linked.genres, "name").should.containDeep(["genre0","genre2"]);
+        _.map(data.linked.genres, "name").should.containDeep(["genre0","genre2"]);
         done();
       });
     });
