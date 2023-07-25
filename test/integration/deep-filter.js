@@ -17,7 +17,7 @@ module.exports = function(util){
         ids = {};
         _.each(setup.apps, function(app){
           _.each(app.resources, function(documents, name){
-            ids[name] = _.pluck(documents, "id");
+            ids[name] = _.map(documents, "id");
           });
         });
         done();

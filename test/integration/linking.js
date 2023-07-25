@@ -13,13 +13,13 @@ module.exports = function(util){
         setup.apps.bands.fortune]);
 
       client.ready.then(function(){
-        resourceNames = _.pluck(_.union.apply(_,_.map(setup.apps, function(app){
+        resourceNames = _.map(_.union.apply(_,_.map(setup.apps, function(app){
           return app.fortune.resources();
         })), "name");
 
         _.each(setup.apps, function(app){
           _.each(app.resources, function(documents, name){
-            ids[name] = _.pluck(documents, "id");
+            ids[name] = _.map(documents, "id");
           });
         });
         util.ids = ids;
