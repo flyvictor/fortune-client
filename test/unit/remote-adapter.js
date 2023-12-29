@@ -1,15 +1,16 @@
-const remoteAdapter = require('../../lib/remote-adapter');
+const remoteAdapterConstructor = require('../../lib/remote-adapter');
 const request = require('../../lib/isomorphic-http-client');
 const sinon = require('sinon');
 const _ = require('lodash');
 require('should');
 
 describe('remote-adapter', function () {
-  let adapter, host, expectedParams;
+  let adapter, host, expectedParams, remoteAdapter;
 
   beforeEach(function () {
     host = 'https://some-url.com';
-    adapter = remoteAdapter(host);
+    remoteAdapter = remoteAdapterConstructor();
+    adapter = remoteAdapter.remoteAdapter(host);
 
     sinon
       .stub(request, 'get')
@@ -20,13 +21,11 @@ describe('remote-adapter', function () {
     sinon
       .stub(request, 'put')
       .returns(Promise.resolve({ body: { users: [{ id: 'replacedId' }] } }));
-    sinon
-      .stub(request, 'patch')
-      .returns(
-        Promise.resolve({
-          body: { users: [{ id: 'userId', firstName: 'Tom' }] },
-        }),
-      );
+    sinon.stub(request, 'patch').returns(
+      Promise.resolve({
+        body: { users: [{ id: 'userId', firstName: 'Tom' }] },
+      }),
+    );
     sinon
       .stub(request, 'delete')
       .returns(Promise.resolve({ body: { users: [] } }));
@@ -238,7 +237,7 @@ describe('remote-adapter', function () {
 });
 
 describe('remote-adapter with secured host', function () {
-  let adapter, host, expectedParams;
+  let adapter, host, expectedParams, remoteAdapter;
 
   beforeEach(function () {
     host = {
@@ -251,7 +250,8 @@ describe('remote-adapter with secured host', function () {
         consumer_secret: 'secret',
       },
     };
-    adapter = remoteAdapter(host);
+    remoteAdapter = remoteAdapterConstructor();
+    adapter = remoteAdapter.remoteAdapter(host);
     sinon
       .stub(request, 'get')
       .returns(Promise.resolve({ body: { users: [{ id: 'userId' }] } }));
@@ -261,13 +261,11 @@ describe('remote-adapter with secured host', function () {
     sinon
       .stub(request, 'put')
       .returns(Promise.resolve({ body: { users: [{ id: 'replacedId' }] } }));
-    sinon
-      .stub(request, 'patch')
-      .returns(
-        Promise.resolve({
-          body: { users: [{ id: 'userId', firstName: 'Tom' }] },
-        }),
-      );
+    sinon.stub(request, 'patch').returns(
+      Promise.resolve({
+        body: { users: [{ id: 'userId', firstName: 'Tom' }] },
+      }),
+    );
     sinon
       .stub(request, 'delete')
       .returns(Promise.resolve({ body: { users: [] } }));
