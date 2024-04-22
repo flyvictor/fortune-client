@@ -165,6 +165,26 @@ describe('remote-adapter', function () {
     });
   });
 
+  it('should be able to change url for future requests', function () {
+    expectedParams = {
+      json: true,
+      uri: 'https://some-url.com/users/userId',
+      qs: undefined,
+    };
+    return adapter.get('users', { params: { id: 'userId' } }).then(function () {
+      request.get.should.be.calledOnce;
+      request.get.getCall(0).args[0].should.eql(expectedParams);
+      remoteAdapter.changeUrl('https://some-url-2.com');
+      expectedParams.uri = 'https://some-url-2.com/users/userId';
+      return adapter
+        .get('users', { params: { id: 'userId' } })
+        .then(function () {
+          request.get.should.be.calledTwice;
+          request.get.getCall(1).args[0].should.eql(expectedParams);
+        });
+    });
+  });
+
   it('should be able to delete header for future requests', function () {
     remoteAdapter.changeHeader('newHeader', '123');
     expectedParams = {
