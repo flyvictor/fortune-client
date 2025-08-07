@@ -1,4 +1,4 @@
-var actionFactory = require("../../lib/actions-factory"),
+var actionFactory = require("../../lib/factories/actions-factory"),
     _ = require("lodash"),
     should = require("should");
 

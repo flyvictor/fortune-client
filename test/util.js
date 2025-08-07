@@ -1,7 +1,13 @@
-var _ = require("lodash");
+const _ = require('lodash');
 
 module.exports = {
-  requireSpecs: function(dir, specs){
-    _.each(specs, function(spec){ require(dir + "/" + spec)(this); },this);
-  }
+  requireSpecs: function (dir, specs) {
+    _.each(
+      specs,
+      function (spec) {
+        require(dir + '/' + spec)(this);
+      },
+      this,
+    );
+  },
 };
