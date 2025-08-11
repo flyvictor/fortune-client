@@ -836,6 +836,14 @@ module.exports = function (util) {
       }
     });
 
+    it('should not crash when proxy is awaited', async function() {
+      try {
+        await client;
+      } catch (err) {
+        throw new Error('Should not throw an error when awaiting client');
+      }
+    });
+
     describe('cache', function () {
       it('should get data from cache if available', async function () {
         client = fortuneClient(['http://localhost:9782'], {
