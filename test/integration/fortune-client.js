@@ -623,6 +623,12 @@ module.exports = function (util) {
       });
     });
 
+    it('returns raw response if result content type is not json-compatible', async function(){
+      const data = await client.callUserPlainTextResult(ids.users[0], {})
+      const body = await data.text();
+      body.should.equal('Plain text content');
+    });
+
     it('camelcases dashed resource names', function (done) {
       client.getNaNaNaNas().then(function (data) {
         data['na-na-na-nas'].length.should.be.above(0);

@@ -40,6 +40,16 @@ module.exports = function () {
               };
             },
           },
+          'plain-text-result': {
+            name: "plain-text-result",
+            method: 'POST',
+            init: function(){
+              return function(req, res){
+                res.set('Content-Type', 'text/plain');
+                res.send('Plain text content');
+              }
+            }
+          }
         },
       },
     )
