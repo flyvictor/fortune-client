@@ -798,7 +798,7 @@ module.exports = function (util) {
       }
     });
 
-    it('should refresh fortune client and execute new inited method if new resources found', async function () {
+    it('should refresh fortune client and execute new inited method if new resources found with keeping headers', async function () {
       const getResourcesStub = sinon.stub(resourcesResolver, 'fetchResources');
       const destroyResourcesStub = sinon.stub(isomorphicClient, 'delete');
 
@@ -814,8 +814,20 @@ module.exports = function (util) {
         statusCode: 204,
       });
 
+      client.changeHeader('auth', 'token');
+
       try {
         await client.destroyNewResource('some-random-id');
+
+        destroyResourcesStub.callCount.should.eql(1);
+        destroyResourcesStub.getCall(0).args[0].should.eql({
+            uri: 'http://localhost:9783/new-resources/some-random-id',
+            json: true,
+            headers: {
+              auth: 'token',
+            },
+          },
+        );
 
         getResourcesStub.callCount.should.eql(2);
         should.exist(
