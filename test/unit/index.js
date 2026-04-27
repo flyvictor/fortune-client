@@ -18,5 +18,6 @@ describe('UNIT TESTS', function () {
     'denormalize',
     'deep-filter',
     'actions-factory',
+    'resources-cache',
   ]);
 });
